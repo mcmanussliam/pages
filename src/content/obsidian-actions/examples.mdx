@@ -1,0 +1,101 @@
+---
+title: Examples
+project: obsidian-actions
+order: 5
+lastUpdated: 2025-12-22
+---
+
+# Examples
+
+## Open with VS Code
+
+This is one of the first actions I made, the amount of times I've had to open
+an obsidian doc in either vim or vs code is incredibly annoying, especially since
+my notes are incredibly nested.
+
+```shell
+/path/to/vs/code/code "{{{path}}}"
+```
+
+Keep in mind, you can't use aliases in plugins, you **must** use the paths, this
+uses a simple plain shell.
+
+## Compile Latex
+
+Turns out there isn't that good of a market for local Latex Editors, I realised
+it wouldn't be that hard to turn Obsidian into a nice Latex Editor.
+
+This relies on another plugin, I've got my own [Obsidian Code View Plugin](https://github.com/mcmanussliam/obsidian-code-view),
+this isn't released though, I know there's another [one that may offer the same functionality](https://obsidian.md/plugins?id=vscode-editor).
+
+```js
+new Notice('compiling latex');
+
+const COMPILE_SCRIPT = '/absolute/path/to/bash/script.sh';
+const FILE_PATH = '{{{path}}}';
+
+const PATH_PARTS = FILE_PATH.split('/');
+const FILENAME = PATH_PARTS.pop();
+const DIR = PATH_PARTS.join('/');
+
+const response = exec(
+  `cd "/${DIR}" && "${COMPILE_SCRIPT}" "./${FILENAME}"`,
+  (err, stdout, stderr) => {
+    if (err) {
+      console.error(err, stderr);
+      new Notice('dang it, failed');
+      return;
+    }
+
+    console.log('fin', stdout);
+    new Notice('successfully compiled');
+  }
+);
+```
+
+Then I've got this bash script which handles a lot of the logic:
+
+```sh
+set -e
+
+if [ -z "$1" ]; then
+  echo "Usage: $0 /full/path/to/file.tex"
+  exit 1
+fi
+
+FILEPATH="$1"
+DIRECTORY="$(dirname "$FILEPATH")"
+FILENAME="$(basename "$FILEPATH")"
+FILENAMETEXT="${FILENAME%.*}"
+
+export PATH="/path/to/tiny/tex"
+
+cd "$DIRECTORY"
+
+pdflatex --shell-escape -interaction=nonstopmode "$FILENAME"
+bibtex "$FILENAMETEXT" || true
+pdflatex --shell-escape -interaction=nonstopmode "$FILENAME"
+pdflatex --shell-escape -interaction=nonstopmode "$FILENAME"
+
+AUX_EXTENSIONS=(
+  aux bbl blg log out toc fls fdb_latexmk synctex.gz
+  lof lot run.xml bcff nav snm vrb
+)
+
+AUX_FOLDERS=(
+  _minted
+)
+
+for EXT in "${AUX_EXTENSIONS[@]}"; do
+  FILE="${FILENAMETEXT}.${EXT}"
+  if [ -f "$FILE" ]; then
+    rm "$FILE"
+  fi
+done
+
+for FOLDER in "${AUX_FOLDERS[@]}"; do
+  if [ -d "$FOLDER" ]; then
+    rm -rf "$FOLDER"
+  fi
+done
+```

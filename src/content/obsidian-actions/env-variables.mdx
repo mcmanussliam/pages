@@ -1,0 +1,40 @@
+---
+title: Environment Variables
+project: obsidian-actions
+order: 3
+lastUpdated: 2025-12-21
+---
+
+# Environment Variables
+
+Actions have access to dynamic variables reflecting the current file and editor context.
+
+| Variable            | Description                           |
+|---------------------|--------------------------------------|
+| `path`              | Absolute file path.                  |
+| `relative_path`     | File path relative to vault root.    |
+| `extension`         | File extension.                      |
+| `readonly`          | True if the editor is read-only.     |
+| `selected`          | Selected text in the editor.         |
+| `selected_lower`    | Lowercase selected text.             |
+| `selected_upper`    | Uppercase selected text.             |
+| `length_selected`   | Length of selected text.             |
+| `word_count`        | Word count of file or selection.     |
+| `line_index`        | Cursor line index (0-based).         |
+| `column_index`      | Cursor column index.                 |
+| `vault_name`        | Name of the vault.                   |
+| `file_name`         | File name without extension.         |
+| `file_name_with_ext`| File name with extension.            |
+| `content`           | Full file content.                   |
+| `content_length`    | Length of file content.              |
+| `timestamp`         | ISO timestamp of execution.          |
+| `date`              | Human-readable date.                 |
+| `time`              | Human-readable time.                 |
+| `hello_world`       | Test variable for experimentation.   |
+
+
+We use [Mustache templates](https://mustache.github.io/) for this.
+
+```shell
+echo "Processing file {{file_name}} at {{time}}"
+```

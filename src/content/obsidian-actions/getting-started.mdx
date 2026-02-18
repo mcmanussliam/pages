@@ -1,0 +1,48 @@
+---
+title: Getting Started
+project: obsidian-actions
+order: 1
+lastUpdated: 2025-12-21
+---
+
+# Getting Started
+
+## Installing
+
+### Default Installation
+
+- Open Obsidian
+- Navigate to Settings > Community Plugins > Browse.
+- Search for Obsidian Actions
+- Install and Enable
+
+### Manual Installation
+
+**If you are manually installing the plugin**:
+
+- Copy `main.js`, `styles.css`, and `manifest.json`
+- Paste into `[your_vault_folder]/.obsidian/plugins/actions`
+- Enable the plugin from Obsidian settings > Community Plugins > Obsidian Actions.
+
+### Developer Installation
+
+- Clone the repo
+- Install dependencies, `npm ci`, if you are ever to add new dependencies please always lock the version, the days of `^` are long gone.
+- Create a symlink from your plugin folder to your obsidian vault.
+  - On macOS / Linux `ln -s /full/path/to/your/repo /full/path/to/your/vault/.obsidian/plugins/actions-plugin`
+- Start watch mode to compile TypeScript automatically `npm run dev`
+- Then enable the plugin in Obsidian and you should see your changes reflected.
+
+## Using the Plugin
+
+- Open Settings > Actions.
+- Create a new action using the Create button.
+- Configure the action:
+  - `name`, displayed in the ui and used to generate the action id.
+  - `icon`, choose any [Lucide](https://lucide.dev/icons/) icon
+  - `description`, optional description shown in settings.
+  - `hook`, determines when the action runs; `manual`, `startup`, `interval`, or on `events`.
+  - `type`, `js` or `shell`.
+  - `code`, the command or script to execute.
+  - `schedule`, required if using an interval hook, in `cron` format.
+- Save the action. You can now execute it manually or wait for its hook trigger.

@@ -1,0 +1,41 @@
+---
+title: Command Types
+project: obsidian-actions
+order: 2
+lastUpdated: 2025-12-21
+---
+
+# Command Types
+
+## JavaScript
+
+`js` actions are executed in a controlled environment with access to a subset of the Obsidian API and helper functions, this includes:
+
+- `app`
+- `vault`
+- `workspace`
+- `metadataCache`
+- `fileManager`
+- `Notice`
+- `Modal`
+- `Setting`
+- `FuzzySuggestModal`
+- `exec`
+
+This can allow you to do some really interesting code:
+
+```javascript
+new Notice('Hello World!'); // displays a notice in Obsidian
+console.log(app.vault.getFiles()); // logs in the Obsidian console
+exec('echo "{{path}}"'); // execs a shell command with an environment variable
+```
+
+## Shell
+
+`shell` actions execute code in a plain `shell`. It's useful for running scripts, git commands, or other cli tools:
+
+```shell
+git add .
+git commit -m "Update"
+git push
+```

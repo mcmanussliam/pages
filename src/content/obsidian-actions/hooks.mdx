@@ -1,0 +1,23 @@
+---
+title: Hooks
+project: obsidian-actions
+order: 4
+lastUpdated: 2025-12-21
+---
+
+# Hooks
+
+Hooks determine when your action runs:
+
+| Hook         | Description                                                                |
+| ------------ | -------------------------------------------------------------------------- |
+| `manual`     | Executes only when manually triggered via the settings or command palette. |
+| `startup`    | Executes automatically when Obsidian loads.                                |
+| `interval`   | Executes on a schedule using cron syntax, `* * * * *`.                     |
+| `createFile` | Executes whenever a new file is created in the vault.                      |
+| `modifyFile` | Executes whenever a file is modified.                                      |
+| `deleteFile` | Executes whenever a file is deleted.                                       |
+| `renameFile` | Executes whenever a file is renamed.                                       |
+
+
+Interval hooks require a valid cron schedule. See [crontab.guru](https://crontab.guru/examples.html) for examples.

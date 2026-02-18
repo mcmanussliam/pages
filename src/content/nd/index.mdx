@@ -1,0 +1,36 @@
+---
+title: Navigate Directory
+description: A terminal directory navigator.
+lastUpdated: 2026-02-18
+links:
+  - key: GitHub
+    value: https://github.com/mcmanussliam/nd-cli
+    external: true
+  - key: Crate
+    value: https://crates.io/crates/nd-cli
+    external: true
+---
+
+# Overview
+
+`nd-cli` is a terminal directory navigator written in Rust.
+It displays subdirectories, lets you move using numeric choices, and prints the
+final selected path when you quit.
+
+## Why Navigate Directory?
+
+You could use a tool to directly navigate to a specific directory using something
+like:
+
+```bash
+cd $(fzf)
+```
+
+This would work but it's slow and requires you to know the full filepath, instead
+`nd-cli` uses numbers to navigate down directories and progressively reveals the
+options at each layers.
+
+## Getting Started
+
+Check out the [Getting Started](/projects/nd-cli/docs/getting-started) guide to begin using `nd-cli`.
+
