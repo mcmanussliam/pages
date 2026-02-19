@@ -13,44 +13,27 @@ lastUpdated: 2026-02-18
 cargo install nd-cli
 ```
 
-### Shell integration
+### Setup shell
 
-Run the associated command in your shell of choice to setup the command.
+Run the following command for your shell, this will add the `nd` command to
+your config allowing you to navigate to the directory after quitting.
 
 ```bash
 # zsh
-echo 'eval "$(nd init zsh)"' >> ~/.zshrc
+echo 'eval "$(nd-cli init zsh)"' >> ~/.zshrc
 source ~/.zshrc
 
 # bash
-echo 'eval "$(nd init bash)"' >> ~/.bashrc
+echo 'eval "$(nd-cli init bash)"' >> ~/.bashrc
 source ~/.bashrc
 
 # fish
-echo 'nd init fish | source' >> ~/.config/fish/config.fish
+echo 'nd-cli init fish | source' >> ~/.config/fish/config.fish
 source ~/.config/fish/config.fish
 
 # powershell
 Add-Content -Path $PROFILE -Value 'Invoke-Expression (& nd init powershell)'
 . $PROFILE
-```
-
-Use `nd` to navigate and update your current shell directory:
-
-```bash
-nd
-```
-
-Without shell integration, you can still run the binary directly:
-
-```bash
-nd-cli
-```
-
-For local development:
-
-```bash
-cargo run -- --show-hidden
 ```
 
 ## Usage
@@ -59,13 +42,13 @@ cargo run -- --show-hidden
 nd
 ```
 
-Commands inside the TUI:
+**Commands**:
 
 - `1..N` select a directory
 - `b` go to parent directory
 - `q` quit and print selected path
 
-Flags:
+**Flags**:
 
 - `--show-hidden` include directories that start with `.`
 - `--start-dir <PATH>` start browsing from a specific directory
