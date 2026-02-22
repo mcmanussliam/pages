@@ -1,0 +1,40 @@
+---
+title: Be Right Back
+description: Run a command. Walk away. Get notified when it finishes.
+lastUpdated: 2026-02-22
+links:
+  - key: GitHub
+    value: https://github.com/mcmanussliam/brb
+    external: true
+  - key: Crate
+    value: https://crates.io/crates/brb-cli
+    external: true
+---
+
+# Overview
+
+```plaintext
+brb cargo test
+
+running 4 tests
+test missing_selected_channel_reports_failure ... ok
+test invalid_webhook_method_fails_fast ... ok
+test custom_channel_success_path ... ok
+test custom_channel_failure_redacts_token_like_values ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.02s
+
+brb: command succeeded (exit 0); notifications sent 1/1
+```
+
+Run a command. Walk away. Get notified when it finishes. `brb` wraps your
+command, waits for it to complete, then sends a completion event to your
+configured channels.
+
+Best used for long builds, test suites, CI-like local scripts, data jobs, and
+deploy commands.
+
+## Getting Started
+
+Check out the [Getting Started](/projects/brb/docs/getting-started) guide to begin using `brb`.
+
