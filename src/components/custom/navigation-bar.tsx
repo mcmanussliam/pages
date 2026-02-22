@@ -6,27 +6,21 @@ import {ModeToggle} from './mode-toggle';
 
 export default function Root() {
   const t = getTranslator();
+  const navItems = [
+    {href: '/', label: t('nav.projects')},
+    {href: githubConfig.profileUrl, label: t('nav.github')},
+  ];
 
   return (
     <NavigationMenu className='max-w-none w-full flex justify-between p-5'>
       <NavigationMenuList className='gap-3'>
-        <NavigationMenuItem>
-          <NavigationMenuLink asChild>
-            <Link href="/">{t('nav.home')}</Link>
-          </NavigationMenuLink>
-        </NavigationMenuItem>
-
-        <NavigationMenuItem>
-          <NavigationMenuLink asChild>
-            <Link href="/projects">{t('nav.projects')}</Link>
-          </NavigationMenuLink>
-        </NavigationMenuItem>
-
-        <NavigationMenuItem>
-          <NavigationMenuLink asChild>
-            <Link href={githubConfig.profileUrl}>{t('nav.github')}</Link>
-          </NavigationMenuLink>
-        </NavigationMenuItem>
+        {navItems.map(item => (
+          <NavigationMenuItem key={item.href}>
+            <NavigationMenuLink asChild>
+              <Link href={item.href}>{item.label}</Link>
+            </NavigationMenuLink>
+          </NavigationMenuItem>
+        ))}
       </NavigationMenuList>
 
       <NavigationMenuList className='gap-3'>

@@ -1,7 +1,8 @@
 import {notFound} from 'next/navigation';
 import Link from 'next/link';
 import type {Metadata} from 'next';
-import {getProject, getProjectDocs, getProjectIds} from '@/lib/content';
+import {getProjectIds} from '@/lib/content';
+import {getProjectPageData} from '@/lib/content.service';
 import {Badge} from '@/components/ui/badge';
 import {BreadcrumbNav} from '@/components/custom/breadcrumb-nav';
 import {getTranslator} from '@/i18n/server';
@@ -19,8 +20,8 @@ export function generateStaticParams() {
 
 export async function generateMetadata({params}: Props): Promise<Metadata> {
   const {projectId} = await params;
-  const project = await getProject(projectId);
-  if (!project) {
+  const projectPageData = await getProjectPageData(projectId);
+  if (!projectPageData) {
     return {
       title: t('meta.projectNotFound.title'),
       description: t('meta.projectNotFound.description'),
@@ -28,25 +29,20 @@ export async function generateMetadata({params}: Props): Promise<Metadata> {
   }
 
   return {
-    title: project.title,
-    description: project.description,
+    title: projectPageData.project.title,
+    description: projectPageData.project.description,
   };
 }
 
 export default async function Root({params}: Props) {
   const {projectId} = await params;
-  const project = await getProject(projectId);
+  const projectPageData = await getProjectPageData(projectId);
 
-  if (!project) {
+  if (!projectPageData) {
     notFound();
   }
 
-  const docs = await getProjectDocs(projectId);
-
-  // Dynamically import the project's index.mdx
-  const ProjectContent = (
-    await import(`@/content/${projectId}/index.mdx`)
-  ).default;
+  const {project, docs, ProjectContent} = projectPageData;
 
   return (
     <>

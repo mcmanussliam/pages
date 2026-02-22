@@ -1,18 +1,13 @@
 import {notFound} from 'next/navigation';
 import Link from 'next/link';
 import type {Metadata} from 'next';
-import fs from 'fs';
-import path from 'path';
 import {
-  getDoc,
-  getProject,
-  getProjectDocs,
   getProjectIds,
   getProjectDocPaths,
-  extractTocFromContent,
 } from '@/lib/content';
+import {getDocPageData} from '@/lib/content.service';
 import {TableOfContents} from '@/components/custom/table-of-contents';
-import {BreadcrumbNav, BreadcrumbNavItemProps} from '@/components/custom/breadcrumb-nav';
+import {BreadcrumbNav, type BreadcrumbNavItemProps} from '@/components/custom/breadcrumb-nav';
 import {Button} from '@/components/ui/button';
 import {getTranslator} from '@/i18n/server';
 import {ChevronLeft, ChevronRight} from 'lucide-react';
@@ -38,15 +33,16 @@ export function generateStaticParams() {
 
 export async function generateMetadata({params}: Props): Promise<Metadata> {
   const {projectId, slug} = await params;
-  const doc = await getDoc(projectId, slug);
-  const project = await getProject(projectId);
+  const docPageData = await getDocPageData(projectId, slug.join('/'));
 
-  if (!doc) {
+  if (!docPageData) {
     return {
       title: t('meta.docNotFound.title'),
       description: t('meta.docNotFound.description'),
     };
   }
+
+  const {doc, project} = docPageData;
 
   return {
     title: project ? `${doc.title} (${project.title})` : doc.title,
@@ -58,31 +54,12 @@ export async function generateMetadata({params}: Props): Promise<Metadata> {
 
 export default async function Root({params}: Props) {
   const {projectId, slug} = await params;
-  const doc = await getDoc(projectId, slug);
-
-  if (!doc) {
+  const docPageData = await getDocPageData(projectId, slug.join('/'));
+  if (!docPageData) {
     notFound();
   }
 
-  const project = await getProject(projectId);
-  const allDocs = await getProjectDocs(projectId);
-
-  const currentIndex = allDocs.findIndex((d) => d.slug === doc.slug);
-  const prevDoc = currentIndex > 0 ? allDocs[currentIndex - 1] : null;
-  const nextDoc = currentIndex < allDocs.length - 1 ? allDocs[currentIndex + 1] : null;
-
-  const document = await import(`@/content/${projectId}/${doc.slug}.mdx`);
-  const Content = document.default;
-
-  const filePath = path.join(
-    process.cwd(),
-    'src/content',
-    projectId,
-    `${doc.slug}.mdx`
-  );
-
-  const fileContent = fs.readFileSync(filePath, 'utf-8');
-  const toc = extractTocFromContent(fileContent);
+  const {doc, project, Content, toc, prevDoc, nextDoc} = docPageData;
 
   const breadcrumbItems: readonly BreadcrumbNavItemProps[] = [
     {label: t('breadcrumbs.projects'), href: '/projects'},

@@ -41,7 +41,8 @@ export const enMessages = {
   },
   footer: {
     builtByPrefix: 'Built by',
-    sourceAvailable: 'The source code is available on GitHub.',
+    sourceAvailable: 'The source code is available on',
+    github: 'GitHub',
   },
   home: {
     title: 'Home',

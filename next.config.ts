@@ -6,7 +6,7 @@ const nextConfig: NextConfig = {
   images: {unoptimized: true},
   pageExtensions: ['js', 'jsx', 'md', 'mdx', 'ts', 'tsx'],
   reactCompiler: true,
-  trailingSlash: true,
+  trailingSlash: false,
 };
 
 const withMDX = createMDX({

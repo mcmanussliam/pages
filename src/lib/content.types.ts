@@ -1,5 +1,5 @@
-import React from 'react';
 import type {HttpsUrl} from '@/config/url.types';
+import type {ComponentType} from 'react';
 
 /**
  * Link metadata for external resources
@@ -60,6 +60,6 @@ export interface TocEntry {
  * MDX component with frontmatter
  */
 export interface MDXDocument<T = DocMetadata | ProjectMetadata> {
-  default: React.ComponentType;
+  default: ComponentType;
   frontmatter: T;
 }

@@ -1,6 +1,6 @@
 import {LinkIcon} from 'lucide-react';
 import {slugify} from '@/lib/slugify';
-import {JSX, Children, ReactNode} from 'react';
+import {Children, type JSX, type ReactNode} from 'react';
 
 interface HeadingWithAnchorProps {
   as: keyof JSX.IntrinsicElements;

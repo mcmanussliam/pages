@@ -190,6 +190,12 @@ const eslintConfig = defineConfig([
       'complexity': ['warn', 10],
       'max-lines-per-function': ['warn', 200],
       'consistent-return': 'error',
+      '@typescript-eslint/consistent-type-imports': ['error', {prefer: 'type-imports', fixStyle: 'inline-type-imports'}],
+      'no-duplicate-imports': 'error',
+      'no-unneeded-ternary': 'error',
+      'no-useless-computed-key': 'error',
+      'no-useless-concat': 'error',
+      'no-implied-eval': 'error',
     },
   }
 ]);

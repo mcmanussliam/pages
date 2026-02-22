@@ -1,11 +1,11 @@
-type GitHubProfileUrl<Username extends string = string> = `https://github.com/${Username}`;
-
 interface GitHubConfig {
   username: string;
-  profileUrl: GitHubProfileUrl;
+  profileUrl: string;
+  repositoryUrl: string;
 }
 
 export const githubConfig: GitHubConfig = {
   username: 'mcmanussliam',
   profileUrl: 'https://github.com/mcmanussliam',
+  repositoryUrl: 'https://github.com/mcmanussliam/pages',
 };

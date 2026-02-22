@@ -28,6 +28,10 @@ export function I18nProvider({locale, messages, children}: I18nProviderProps) {
 
 export function useI18n() {
   const context = useContext(I18nContext);
+  if (!context && process.env.NODE_ENV === 'development') {
+    throw new Error('useI18n must be used within an I18nProvider.');
+  }
+
   const locale = context?.locale ?? defaultLocale;
   const messages = context?.messages ?? getMessages(defaultLocale);
 

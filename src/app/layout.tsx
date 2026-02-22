@@ -7,7 +7,7 @@ import {getMessages} from '@/i18n/index';
 import {getTranslator} from '@/i18n/server';
 import {JetBrains_Mono} from 'next/font/google';
 import type {Metadata} from 'next';
-import {ReactNode} from 'react';
+import type {ReactNode} from 'react';
 import Link from 'next/link';
 
 import './globals.css';
@@ -26,7 +26,7 @@ export const metadata: Metadata = {
 
 function Content({children}: Readonly<{children: ReactNode}>) {
   return (
-    <div className="min-h-screen w-1/1 lg:w-4/5 flex flex-col">
+    <div className="min-h-screen w-full lg:w-4/5 flex flex-col">
       <nav className='w-full'>
         <NavigationBar/>
       </nav>
@@ -36,11 +36,7 @@ function Content({children}: Readonly<{children: ReactNode}>) {
       </main>
 
       <footer className="p-7 text-muted-foreground text-xs text-center">
-        {t('footer.builtByPrefix')}{' '}
-        <Link href={githubConfig.profileUrl} className="underline">
-          {githubConfig.username}
-        </Link>
-        . {t('footer.sourceAvailable')}
+        {t('footer.builtByPrefix')} <Link href={githubConfig.profileUrl} className="underline">{githubConfig.username}</Link>. {t('footer.sourceAvailable')} <Link href={githubConfig.repositoryUrl} className="underline">{t('footer.github')}</Link>.
       </footer>
     </div>
   );

@@ -16,15 +16,17 @@ export function TableOfContents({toc}: TableOfContentsProps) {
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            setActiveId(entry.target.id);
-          }
-        });
+        const [firstVisibleHeading] = entries
+          .filter(entry => entry.isIntersecting)
+          .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
+
+        if (firstVisibleHeading) {
+          setActiveId(firstVisibleHeading.target.id);
+        }
       },
       {
-        rootMargin: '-100px 0px -66%',
-        threshold: 1,
+        // Account for sticky header and mark a heading active shortly before it reaches the top.
+        threshold: 0.1,
       }
     );
 
@@ -69,6 +71,7 @@ export function TableOfContents({toc}: TableOfContentsProps) {
                 )}
                 onClick={(e) => {
                   e.preventDefault();
+                  setActiveId(entry.id);
                   document.getElementById(entry.id)?.scrollIntoView({
                     behavior: 'smooth',
                     block: 'start',

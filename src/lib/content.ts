@@ -18,10 +18,45 @@ function isDirectory(entryPath: string) {
   return fs.statSync(entryPath).isDirectory();
 }
 
-function getProjectDocFiles(projectDir: string): string[] {
-  return fs
-    .readdirSync(projectDir)
-    .filter(file => file.endsWith(MDX_FILE_EXTENSION) && file !== INDEX_FILE_NAME);
+function getMdxDocRelativePaths(projectDir: string, currentRelativeDir = ''): string[] {
+  const currentDir = path.join(projectDir, currentRelativeDir);
+  const entries = fs.readdirSync(currentDir, {withFileTypes: true});
+  const docs: string[] = [];
+
+  for (const entry of entries) {
+    const entryRelativePath = path.join(currentRelativeDir, entry.name);
+
+    if (entry.isDirectory()) {
+      docs.push(...getMdxDocRelativePaths(projectDir, entryRelativePath));
+      continue;
+    }
+
+    if (
+      entry.isFile() &&
+      entry.name.endsWith(MDX_FILE_EXTENSION) &&
+      entry.name !== INDEX_FILE_NAME
+    ) {
+      docs.push(entryRelativePath.slice(0, -MDX_FILE_EXTENSION.length));
+    }
+  }
+
+  return docs;
+}
+
+function sortDocsByOrderThenTitle(a: Doc, b: Doc): number {
+  if (a.order !== undefined && b.order !== undefined) {
+    return a.order - b.order;
+  }
+
+  if (a.order !== undefined) {
+    return -1;
+  }
+
+  if (b.order !== undefined) {
+    return 1;
+  }
+
+  return a.title.localeCompare(b.title);
 }
 
 export async function getProjects(): Promise<Project[]> {
@@ -40,10 +75,10 @@ export async function getProjects(): Promise<Project[]> {
           throw new Error(`Project ${dir} missing ${INDEX_FILE_NAME}`);
         }
 
-        const docsCount = getProjectDocFiles(projectDir).length;
+        const docsCount = getMdxDocRelativePaths(projectDir).length;
 
         const mdxModule: MDXDocument<ProjectMetadata> = await import(
-          `@/content/${dir}/${INDEX_FILE_NAME}`
+          `@/content/${dir}/index.mdx`
         );
 
         return {
@@ -65,10 +100,10 @@ export async function getProject(projectId: string): Promise<Project | null> {
     return null;
   }
 
-  const docsCount = getProjectDocFiles(projectDir).length;
+  const docsCount = getMdxDocRelativePaths(projectDir).length;
 
   const mdxModule: MDXDocument<ProjectMetadata> = await import(
-    `@/content/${projectId}/${INDEX_FILE_NAME}`
+    `@/content/${projectId}/index.mdx`
   );
 
   return {
@@ -84,41 +119,23 @@ export async function getProjectDocs(projectId: string): Promise<Doc[]> {
     return [];
   }
 
-  const docFiles = getProjectDocFiles(projectDir);
+  const docFiles = getMdxDocRelativePaths(projectDir);
 
   const docs = await Promise.all(
     docFiles.map(async file => {
-      const slug = file.replace(MDX_FILE_EXTENSION, '');
+      const slug = file;
 
-      const mdxModule: MDXDocument<DocMetadata> = await import(`@/content/${projectId}/${file}`);
+      const mdxModule: MDXDocument<DocMetadata> = await import(`@/content/${projectId}/${file}.mdx`);
 
       return {
         slug,
-        path: [slug],
+        path: slug.split('/'),
         ...mdxModule.frontmatter,
       };
     })
   );
 
-  return docs.sort((a, b) => {
-    // If both have order, sort by order
-    if (a.order !== undefined && b.order !== undefined) {
-      return a.order - b.order;
-    }
-
-    // If only a has order, it comes first
-    if (a.order !== undefined) {
-      return -1;
-    }
-
-    // If only b has order, it comes first
-    if (b.order !== undefined) {
-      return 1;
-    }
-
-    // Otherwise, sort alphabetically by title
-    return a.title.localeCompare(b.title);
-  });
+  return docs.sort(sortDocsByOrderThenTitle);
 }
 
 export async function getDoc(
@@ -142,13 +159,38 @@ export async function getDoc(
 }
 
 export function extractTocFromContent(content: string): TocEntry[] {
-  const headingRegex = /^(#{1,3})\s+(.+)$/gm;
   const toc: TocEntry[] = [];
-  let match;
+  const lines = content.split('\n');
+  let activeFenceMarker: '```' | '~~~' | null = null;
 
-  while ((match = headingRegex.exec(content)) !== null) {
-    const level = match[1].length as 1 | 2 | 3;
-    const text = match[2].trim();
+  for (const line of lines) {
+    const fenceMatch = line.trim().match(/^(```+|~~~+)/);
+    if (fenceMatch) {
+      const marker = fenceMatch[1].startsWith('`') ? '```' : '~~~';
+
+      if (!activeFenceMarker) {
+        activeFenceMarker = marker;
+        continue;
+      }
+
+      if (activeFenceMarker === marker) {
+        activeFenceMarker = null;
+      }
+
+      continue;
+    }
+
+    if (activeFenceMarker) {
+      continue;
+    }
+
+    const headingMatch = line.match(/^(#{1,3})\s+(.+)$/);
+    if (!headingMatch) {
+      continue;
+    }
+
+    const level = headingMatch[1].length as 1 | 2 | 3;
+    const text = headingMatch[2].trim();
 
     const cleanText = text
       .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1') // Remove links
@@ -167,7 +209,7 @@ export function extractTocFromContent(content: string): TocEntry[] {
 export function getProjectIds(): string[] {
   return fs
     .readdirSync(CONTENT_DIR)
-    .filter((dir) => isDirectory(path.join(CONTENT_DIR, dir)));
+    .filter(dir => isDirectory(path.join(CONTENT_DIR, dir)));
 }
 
 export function getProjectDocPaths(projectId: string): string[][] {
@@ -176,5 +218,5 @@ export function getProjectDocPaths(projectId: string): string[][] {
     return [];
   }
 
-  return getProjectDocFiles(projectDir).map(file => [file.replace(MDX_FILE_EXTENSION, '')]);
+  return getMdxDocRelativePaths(projectDir).map(file => file.split('/'));
 }

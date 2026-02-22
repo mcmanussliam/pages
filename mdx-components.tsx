@@ -1,5 +1,5 @@
 import type {MDXComponents} from 'mdx/types';
-import {ReactNode} from 'react';
+import type {ReactNode} from 'react';
 
 import {
   Table,
@@ -9,7 +9,7 @@ import {
   TableHead,
   TableCell,
 } from '@/components/ui/table';
-import HeadingWithAnchor from './src/components/custom/heading-anchor';
+import HeadingWithAnchor from '@/components/custom/heading-anchor';
 import {ArrowUpRight} from 'lucide-react';
 
 function isInlineCode(children: ReactNode) {
@@ -33,7 +33,7 @@ export const mdxComponents: MDXComponents = {
   blockquote: ({children}) => <blockquote className="mt-6 mb-6 border-l-2 pl-6 italic text-sm">{children}</blockquote>,
 
   // eslint-disable-next-line @next/next/no-img-element
-  img: ({alt, ...props}) => <img {...props} alt={alt ?? ''} loading="lazy" decoding="async" className="my-6 w-1/1 border dim"/>,
+  img: ({alt, ...props}) => <img {...props} alt={alt ?? ''} loading="lazy" decoding="async" className="my-6 w-full border dim"/>,
 
   table: ({children}) => <Table className="my-6">{children}</Table>,
   thead: ({children}) => <TableHeader>{children}</TableHeader>,
@@ -54,7 +54,6 @@ export const mdxComponents: MDXComponents = {
   a: ({children, ...props}) => <a className="font-medium link-foreground underline underline-offset-4" {...props}>{children}<ArrowUpRight size='16' className='inline-block'/></a>,
   hr: () => <hr className="my-8" />,
 };
-
 
 export function useMDXComponents(components: MDXComponents): MDXComponents {
   return {
