@@ -1,0 +1,47 @@
+---
+title: Command Reference
+project: otto
+order: 5
+updated: 2026-02-22
+---
+
+# Command Reference
+
+## Main commands
+
+| Command | Purpose |
+| --- | --- |
+| `otto init` | Create starter `otto.yml` |
+| `otto run <task>` | Execute one named task |
+| `otto run -- <cmd...>` | Execute inline command |
+| `otto tasks` | List configured tasks |
+| `otto history` | Show recent run records |
+| `otto validate` | Parse + validate `otto.yml` |
+| `otto completion <shell>` | Print shell completion script |
+| `otto version` | Print version |
+
+## Common options
+
+| Option | Applies to | Notes |
+| --- | --- | --- |
+| `--json` | `run`, `tasks`, `history`, `validate` | machine-readable output |
+| `--config <path>` | `run`, `tasks`, `validate` | use non-default config file |
+| `--no-color` | global | disable ANSI coloring |
+
+## History filters
+
+```bash
+otto history --status success --source task --limit 20
+```
+
+`status`: `success` or `failed`
+`source`: `task` or `inline`
+
+## Dotenv behavior
+
+`otto run` auto-loads `.env` when present.
+
+- disable auto-load: `--no-dotenv`
+- choose file: `--env-file .env.local`
+
+Task `env` values can reference existing variables (`${NAME}`).

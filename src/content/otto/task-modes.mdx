@@ -1,0 +1,56 @@
+---
+title: Task Modes
+project: otto
+order: 2
+updated: 2026-02-22
+---
+
+# Task Modes
+
+Each task must use exactly one execution mode.
+
+| Mode | What it does | Best for |
+| --- | --- | --- |
+| `exec` | Runs argv directly, no shell parsing | most commands, safer argument handling |
+| `run` | Runs a shell command string | small scripts and multiline shell |
+| `tasks` | Runs other named tasks | CI-style orchestration |
+
+## `exec`
+
+```yaml
+tasks:
+  build:
+    exec: ["cargo", "build", "--release"]
+```
+
+Use this when you already know the command and args.
+
+## `run`
+
+```yaml
+tasks:
+  lint:
+    run: |
+      set -eu
+      cargo fmt --all --check
+      cargo clippy --all-targets --all-features -- -D warnings
+```
+
+Use this when command chaining is simpler in shell syntax.
+
+## `tasks`
+
+```yaml
+tasks:
+  ci:
+    tasks: ["lint", "test", "build"]
+    parallel: false
+```
+
+Set `parallel: true` when child tasks are independent.
+
+## Validation rules to remember
+
+- Do not mix `exec`, `run`, and `tasks` in the same task.
+- Composed tasks should not set `dir`, `env`, `timeout`, `retries`, or `retry_backoff`.
+- Task names should be lowercase and shell-friendly (`a-z`, `0-9`, `_`, `-`).

@@ -1,0 +1,61 @@
+---
+title: Config Reference
+project: otto
+order: 3
+updated: 2026-02-22
+---
+
+# Config Reference
+
+Otto reads `otto.yml` from the current working directory by default.
+
+## Top-level keys
+
+| Key | Required | Notes |
+| --- | --- | --- |
+| `version` | yes | currently `1` |
+| `defaults` | no | shared runtime defaults |
+| `notifications` | no | global notification providers |
+| `tasks` | yes | named task map |
+
+## `defaults`
+
+| Field | Type | Default |
+| --- | --- | --- |
+| `timeout` | duration string | no timeout when empty |
+| `retries` | integer `0..10` | `0` |
+| `retry_backoff` | duration string | `1s` |
+| `notify_on` | `never` / `failure` / `always` | `failure` |
+
+## `notifications`
+
+| Field | Type | Notes |
+| --- | --- | --- |
+| `desktop` | boolean | defaults to `true` |
+| `webhook_url` | URL string | if set, Otto posts run events |
+| `webhook_timeout` | duration string | defaults to `5s` |
+
+## Task fields
+
+| Field | Applies to | Notes |
+| --- | --- | --- |
+| `description` | all | human-readable task text |
+| `exec` | command tasks | argv list |
+| `run` | command tasks | shell command |
+| `tasks` | composed tasks | child task names |
+| `parallel` | composed tasks | run children concurrently |
+| `dir` | `exec`/`run` | working directory |
+| `env` | `exec`/`run` | task-local environment |
+| `timeout` | `exec`/`run` | per-attempt timeout |
+| `retries` | `exec`/`run` | retry count |
+| `retry_backoff` | `exec`/`run` | backoff between retries |
+| `notify_on` | all | notification policy |
+
+## Validate before run
+
+```bash
+otto validate
+otto validate --json
+```
+
+`--json` is intended for tool/agent pipelines.

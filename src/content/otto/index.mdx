@@ -1,0 +1,38 @@
+---
+title: Otto Task Runner
+description: Task runner with history, retries, and notifications.
+lastUpdated: 2026-02-22
+links:
+  - key: GitHub
+    value: https://github.com/mcmanussliam/otto
+    external: true
+  - key: Crate
+    value: https://crates.io/crates/otto-cli
+    external: true
+---
+
+# Overview
+
+[**Otto**](https://crates.io/crates/otto-cli) simple task runner. Think make, but with built-in retries, timeouts, run history, and notifications.
+
+It supports:
+
+- direct command execution (`exec`)
+- shell command execution (`run`)
+- task composition (`tasks`)
+- retries and timeout control
+- run history in `.otto/history.jsonl`
+- desktop and webhook notifications
+
+## Why use Otto?
+
+Most task tooling is either too minimal or too heavy. Otto keeps the model small:
+
+- one `otto.yml`
+- one command (`otto run ...`) for day-to-day use
+- strong defaults with per-task overrides
+- predictable exit codes for scripts and agents
+
+## Getting Started
+
+Check out the [Getting Started](/projects/otto/docs/getting-started) guide to begin using Otto.
