@@ -1,19 +1,30 @@
 import {describe, it, expect, beforeEach, afterEach, vi} from 'vitest';
-import {render, screen} from '@testing-library/react';
+import {act, fireEvent, render, screen} from '@testing-library/react';
 import {TableOfContents} from '../table-of-contents';
 import type {TocEntry} from '@/lib/content/content.types';
 
 // Mock IntersectionObserver
 class MockIntersectionObserver {
+  public static callback: IntersectionObserverCallback | null = null;
+  public static instances: MockIntersectionObserver[] = [];
   public observe = vi.fn();
   public disconnect = vi.fn();
   public unobserve = vi.fn();
+
+  constructor(callback?: IntersectionObserverCallback) {
+    if (callback) {
+      MockIntersectionObserver.callback = callback;
+    }
+    MockIntersectionObserver.instances.push(this);
+  }
 }
 
 describe('TableOfContents', () => {
   beforeEach(() => {
     // @ts-expect-error - Mock IntersectionObserver
     global.IntersectionObserver = MockIntersectionObserver;
+    MockIntersectionObserver.callback = null;
+    MockIntersectionObserver.instances = [];
   });
 
   afterEach(() => {
@@ -103,5 +114,65 @@ describe('TableOfContents', () => {
     // Cleanup
     document.body.removeChild(mockElement1);
     document.body.removeChild(mockElement2);
+  });
+
+  it('should update active link from observed heading intersections', () => {
+    const toc: TocEntry[] = [
+      {id: 'section-1', text: 'Section 1', level: 1},
+      {id: 'section-2', text: 'Section 2', level: 2},
+    ];
+
+    const section1 = document.createElement('h2');
+    section1.id = 'section-1';
+    const section2 = document.createElement('h2');
+    section2.id = 'section-2';
+    document.body.appendChild(section1);
+    document.body.appendChild(section2);
+
+    const {unmount} = render(<TableOfContents toc={toc} />);
+
+    act(() => {
+      MockIntersectionObserver.callback?.(
+        [
+          {
+            isIntersecting: true,
+            target: section2,
+            boundingClientRect: {top: 12},
+          } as unknown as IntersectionObserverEntry,
+        ],
+        {} as IntersectionObserver
+      );
+    });
+
+    expect(screen.getByText('Section 2').className).toContain('font-medium');
+
+    unmount();
+    expect(MockIntersectionObserver.instances[0]?.disconnect).toHaveBeenCalled();
+    document.body.removeChild(section1);
+    document.body.removeChild(section2);
+  });
+
+  it('should set active id and smooth-scroll when a toc link is clicked', () => {
+    const toc: TocEntry[] = [
+      {id: 'section-1', text: 'Section 1', level: 1},
+    ];
+
+    const section = document.createElement('h2');
+    section.id = 'section-1';
+    section.scrollIntoView = vi.fn();
+    document.body.appendChild(section);
+
+    render(<TableOfContents toc={toc} />);
+
+    const link = screen.getByText('Section 1');
+    fireEvent.click(link);
+
+    expect(section.scrollIntoView).toHaveBeenCalledWith({
+      behavior: 'smooth',
+      block: 'start',
+    });
+    expect(link.className).toContain('font-medium');
+
+    document.body.removeChild(section);
   });
 });
