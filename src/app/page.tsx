@@ -1,8 +1,8 @@
 import Link from 'next/link';
 import type {Metadata} from 'next';
 import {Badge} from '@/components/ui/badge';
-import {getTranslator} from '@/i18n/server';
-import {getProjects} from '@/lib/content';
+import {getTranslator} from '@/lib/i18n/server';
+import {getProjects} from '@/lib/content/content';
 
 const t = getTranslator();
 

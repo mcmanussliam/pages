@@ -1,7 +1,7 @@
 import {notFound} from 'next/navigation';
 import type {ReactNode} from 'react';
-import {getProjectIds} from '@/lib/content';
-import {getProjectPageData} from '@/lib/content.service';
+import {getProjectIds} from '@/lib/content/content';
+import {getProjectPageData} from '@/lib/content/content-service';
 import {ProjectNav} from '@/components/custom/project-nav';
 
 interface Props {

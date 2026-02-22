@@ -1,5 +1,5 @@
 import {describe, it, expect} from 'vitest';
-import {slugify} from '../slugify';
+import {slugify} from '../../../lib/utils/slugify';
 
 describe('slugify', () => {
   it('should convert text to lowercase', () => {

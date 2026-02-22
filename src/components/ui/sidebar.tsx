@@ -4,7 +4,7 @@ import * as React from 'react';
 import {cva, type VariantProps} from 'class-variance-authority';
 import {Slot} from 'radix-ui';
 
-import {cn} from '@/lib/utils';
+import {cn} from '@/lib/utils/utils';
 import {Button} from '@/components/ui/button';
 import {Input} from '@/components/ui/input';
 import {Separator} from '@/components/ui/separator';
@@ -30,6 +30,10 @@ const SIDEBAR_WIDTH = '16rem';
 const SIDEBAR_WIDTH_MOBILE = '18rem';
 const SIDEBAR_WIDTH_ICON = '3rem';
 const SIDEBAR_KEYBOARD_SHORTCUT = 'b';
+
+type SidebarSide = 'left' | 'right';
+type SidebarVariant = 'sidebar' | 'floating' | 'inset';
+type SidebarCollapsible = 'offExamples' | 'icon' | 'none';
 
 type SidebarContextProps = {
   state: 'expanded' | 'collapsed'
@@ -174,7 +178,7 @@ function SidebarMobile({
   setOpenMobile,
   ...props
 }: {
-  side: 'left' | 'right'
+  side: SidebarSide
   children: React.ReactNode
   openMobile: boolean
   setOpenMobile: (open: boolean) => void
@@ -201,6 +205,15 @@ function SidebarMobile({
   );
 }
 
+function getSidebarDesktopClasses(variant: SidebarVariant, side: SidebarSide) {
+  const isFloatingOrInset = variant === 'floating' || variant === 'inset';
+  const gapWidthClass = isFloatingOrInset ? 'group-data-[collapsible=icon]:w-[calc(var(--sidebar-width-icon)+(--spacing(4)))]' : 'group-data-[collapsible=icon]:w-(--sidebar-width-icon)';
+  const sidePositionClass = side === 'left' ? 'left-0 group-data-[collapsible=offExamples]:left-[calc(var(--sidebar-width)*-1)]' : 'right-0 group-data-[collapsible=offExamples]:right-[calc(var(--sidebar-width)*-1)]';
+  const containerWidthClass = isFloatingOrInset ? 'p-2 group-data-[collapsible=icon]:w-[calc(var(--sidebar-width-icon)+(--spacing(4))+2px)]' : 'group-data-[collapsible=icon]:w-(--sidebar-width-icon) group-data-[side=left]:border-r group-data-[side=right]:border-l';
+
+  return {gapWidthClass, sidePositionClass, containerWidthClass};
+}
+
 function Sidebar({
   side = 'left',
   variant = 'sidebar',
@@ -209,9 +222,9 @@ function Sidebar({
   children,
   ...props
 }: React.ComponentProps<'div'> & {
-  side?: 'left' | 'right'
-  variant?: 'sidebar' | 'floating' | 'inset'
-  collapsible?: 'offExamples' | 'icon' | 'none'
+  side?: SidebarSide
+  variant?: SidebarVariant
+  collapsible?: SidebarCollapsible
 }) {
   const {isMobile, state, openMobile, setOpenMobile} = useSidebar();
 
@@ -232,16 +245,7 @@ function Sidebar({
     );
   }
 
-  const isFloatingOrInset = variant === 'floating' || variant === 'inset';
-  const gapIconWidth = 'group-data-[collapsible=icon]:w-[calc(var(--sidebar-width-icon)+(--spacing(4)))]';
-  const gapWidthClass = isFloatingOrInset ? gapIconWidth : 'group-data-[collapsible=icon]:w-(--sidebar-width-icon)';
-  const leftPos = 'left-0 group-data-[collapsible=offExamples]:left-[calc(var(--sidebar-width)*-1)]';
-  const rightPos = 'right-0 group-data-[collapsible=offExamples]:right-[calc(var(--sidebar-width)*-1)]';
-  const sidePositionClass = side === 'left' ? leftPos : rightPos;
-  const floatingWidth = 'p-2 group-data-[collapsible=icon]:w-[calc(var(--sidebar-width-icon)+(--spacing(4))+2px)]';
-  const defaultWidth = 'group-data-[collapsible=icon]:w-(--sidebar-width-icon)';
-  const borderClasses = 'group-data-[side=left]:border-r group-data-[side=right]:border-l';
-  const containerWidthClass = isFloatingOrInset ? floatingWidth : `${defaultWidth} ${borderClasses}`;
+  const {gapWidthClass, sidePositionClass, containerWidthClass} = getSidebarDesktopClasses(variant, side);
 
   return (
     <div

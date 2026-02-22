@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import {githubConfig} from '@/config/github.config';
-import {getTranslator} from '@/i18n/server';
+import {getTranslator} from '@/lib/i18n/server';
 import {NavigationMenu, NavigationMenuItem, NavigationMenuLink, NavigationMenuList} from '../ui/navigation-menu';
 import {ModeToggle} from './mode-toggle';
 

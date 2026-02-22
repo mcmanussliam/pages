@@ -1,7 +1,7 @@
 import {describe, it, expect, beforeEach, afterEach, vi} from 'vitest';
 import {render, screen} from '@testing-library/react';
 import {TableOfContents} from '../table-of-contents';
-import type {TocEntry} from '@/lib/content.types';
+import type {TocEntry} from '@/lib/content/content.types';
 
 // Mock IntersectionObserver
 class MockIntersectionObserver {

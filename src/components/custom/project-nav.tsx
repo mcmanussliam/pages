@@ -2,9 +2,9 @@
 
 import Link from 'next/link';
 import {usePathname} from 'next/navigation';
-import type {Project, Doc} from '@/lib/content.types';
-import {useI18n} from '@/i18n/i18n-provider';
-import {cn} from '@/lib/utils';
+import type {Project, Doc} from '@/lib/content/content.types';
+import {useI18n} from '@/lib/i18n/i18n-provider';
+import {cn} from '@/lib/utils/utils';
 
 interface ProjectNavProps {
   project: Project;

@@ -1,9 +1,9 @@
 'use client';
 
 import React, {createContext, useContext} from 'react';
-import {defaultLocale, type Locale} from './config';
 import {getMessages, t, type MessageKey} from './index';
-import type {AppMessages} from './messages/en';
+import type {AppMessages} from './locales';
+import {defaultLocale, type Locale} from './i18n-config';
 
 interface I18nContextValue {
   locale: Locale;

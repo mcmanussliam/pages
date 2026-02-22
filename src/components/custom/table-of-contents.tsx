@@ -1,9 +1,9 @@
 'use client';
 
 import {useEffect, useState} from 'react';
-import type {TocEntry} from '@/lib/content.types';
-import {useI18n} from '@/i18n/i18n-provider';
-import {cn} from '@/lib/utils';
+import type {TocEntry} from '@/lib/content/content.types';
+import {useI18n} from '@/lib/i18n/i18n-provider';
+import {cn} from '@/lib/utils/utils';
 
 interface TableOfContentsProps {
   toc: TocEntry[];

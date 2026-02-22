@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import {slugify} from './slugify';
+import {slugify} from '../utils/slugify';
 import type {
   Project,
   Doc,

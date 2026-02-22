@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import {afterEach, describe, expect, it} from 'vitest';
-import {extractTocFromContent, getProjectDocPaths} from '../content';
+import {extractTocFromContent, getProjectDocPaths} from '@/lib/content/content';
 
 const CONTENT_DIR = path.join(process.cwd(), 'src/content');
 const CREATED_DIRS: string[] = [];

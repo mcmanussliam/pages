@@ -1,11 +1,11 @@
 import {notFound} from 'next/navigation';
 import Link from 'next/link';
 import type {Metadata} from 'next';
-import {getProjectIds} from '@/lib/content';
-import {getProjectPageData} from '@/lib/content.service';
+import {getProjectIds} from '@/lib/content/content';
+import {getProjectPageData} from '@/lib/content/content-service';
 import {Badge} from '@/components/ui/badge';
 import {BreadcrumbNav} from '@/components/custom/breadcrumb-nav';
-import {getTranslator} from '@/i18n/server';
+import {getTranslator} from '@/lib/i18n/server';
 
 interface Props {
   params: Promise<{projectId: string}>;

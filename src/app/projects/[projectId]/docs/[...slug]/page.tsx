@@ -4,12 +4,12 @@ import type {Metadata} from 'next';
 import {
   getProjectIds,
   getProjectDocPaths,
-} from '@/lib/content';
-import {getDocPageData} from '@/lib/content.service';
+} from '@/lib/content/content';
+import {getDocPageData} from '@/lib/content/content-service';
 import {TableOfContents} from '@/components/custom/table-of-contents';
 import {BreadcrumbNav, type BreadcrumbNavItemProps} from '@/components/custom/breadcrumb-nav';
 import {Button} from '@/components/ui/button';
-import {getTranslator} from '@/i18n/server';
+import {getTranslator} from '@/lib/i18n/server';
 import {ChevronLeft, ChevronRight} from 'lucide-react';
 
 interface Props {

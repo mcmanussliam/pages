@@ -1,10 +1,10 @@
 import NavigationBar from '@/components/custom/navigation-bar';
 import {ThemeProvider} from '@/components/theme-provider';
 import {githubConfig} from '@/config/github.config';
-import {defaultLocale} from '@/i18n/config';
-import {I18nProvider} from '@/i18n/i18n-provider';
-import {getMessages} from '@/i18n/index';
-import {getTranslator} from '@/i18n/server';
+import {defaultLocale} from '@/lib/i18n/i18n-config';
+import {I18nProvider} from '@/lib/i18n/i18n-provider';
+import {getMessages} from '@/lib/i18n/index';
+import {getTranslator} from '@/lib/i18n/server';
 import {JetBrains_Mono} from 'next/font/google';
 import type {Metadata} from 'next';
 import type {ReactNode} from 'react';

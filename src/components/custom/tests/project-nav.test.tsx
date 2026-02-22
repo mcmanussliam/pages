@@ -1,7 +1,7 @@
 import {describe, it, expect, vi} from 'vitest';
 import {render, screen} from '@testing-library/react';
 import {ProjectNav} from '../project-nav';
-import type {Project, Doc} from '@/lib/content.types';
+import type {Project, Doc} from '@/lib/content/content.types';
 
 vi.mock('next/navigation', () => ({usePathname: vi.fn(() => '/projects/test-project'),}));
 

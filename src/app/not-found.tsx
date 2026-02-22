@@ -1,5 +1,5 @@
 import type {Metadata} from 'next';
-import {getTranslator} from '@/i18n/server';
+import {getTranslator} from '@/lib/i18n/server';
 
 const t = getTranslator();
 

@@ -1,5 +1,5 @@
 import {LinkIcon} from 'lucide-react';
-import {slugify} from '@/lib/slugify';
+import {slugify} from '@/lib/utils/slugify';
 import {Children, type JSX, type ReactNode} from 'react';
 
 interface HeadingWithAnchorProps {
