@@ -11,7 +11,8 @@ import {
 
 export interface BreadcrumbNavItemProps {
   label: string;
-  href?: string;
+
+href?: string;
 }
 
 interface BreadcrumbNavProps {

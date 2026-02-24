@@ -1,11 +1,11 @@
 import Link from 'next/link';
 import {githubConfig} from '@/config/github.config';
-import {getTranslator} from '@/lib/i18n/server';
 import {NavigationMenu, NavigationMenuItem, NavigationMenuLink, NavigationMenuList} from '../ui/navigation-menu';
 import {ModeToggle} from './mode-toggle';
+import {I18nService} from '@/lib/i18n';
 
 export default function Root() {
-  const t = getTranslator();
+  const t = I18nService.translator();
   const navItems = [
     {href: '/', label: t('nav.projects')},
     {href: githubConfig.profileUrl, label: t('nav.github')},

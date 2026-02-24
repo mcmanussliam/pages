@@ -1,8 +1,7 @@
 import React from 'react';
 import {renderHook} from '@testing-library/react';
 import {afterEach, describe, expect, it, vi} from 'vitest';
-import {getMessages} from '@/lib/i18n';
-import {I18nProvider, useI18n} from '@/lib/i18n/i18n-provider';
+import {I18nProvider, I18nService, useI18n} from '@/lib/i18n';
 
 describe('i18n-provider', () => {
   afterEach(() => {
@@ -17,7 +16,7 @@ describe('i18n-provider', () => {
   });
 
   it('uses provider locale/messages when available', () => {
-    const defaultMessages = getMessages();
+    const defaultMessages = I18nService.locale();
     const messages = {
       ...defaultMessages,
       nav: {
@@ -39,7 +38,7 @@ describe('i18n-provider', () => {
     vi.stubEnv('NODE_ENV', 'development');
 
     expect(() => renderHook(() => useI18n())).toThrow(
-      'useI18n must be used within an I18nProvider.'
+      '`useI18n` must be used within an `I18nProvider`.'
     );
   });
 });

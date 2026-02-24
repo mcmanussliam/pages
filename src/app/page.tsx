@@ -1,10 +1,12 @@
 import Link from 'next/link';
 import type {Metadata} from 'next';
 import {Badge} from '@/components/ui/badge';
-import {getTranslator} from '@/lib/i18n/server';
-import {getProjects} from '@/lib/content/content';
+import {contentRepository} from '@/lib/content/content';
+import {I18nService} from '@/lib/i18n';
 
-const t = getTranslator();
+const t = I18nService.translator();
+
+export const revalidate = 300;
 
 export const metadata: Metadata = {
   title: t('meta.projects.title'),
@@ -12,7 +14,7 @@ export const metadata: Metadata = {
 };
 
 export default async function Page() {
-  const projects = await getProjects();
+  const projects = await contentRepository.getProjects();
 
   return (
     <>
@@ -52,6 +54,24 @@ export default async function Page() {
                     }),
                   })}
                 </span>
+
+                {project.recentRelease?.tag ? (
+                  <>
+                    <span>-</span>
+                    {project.recentRelease.url ? (
+                      <Link
+                        href={project.recentRelease.url}
+                        target="_blank"
+                        rel="noreferrer noopener"
+                        className="text-primary underline-offset-4 hover:underline"
+                      >
+                        {project.recentRelease.tag}
+                      </Link>
+                    ) : (
+                      <span>{project.recentRelease.tag}</span>
+                    )}
+                  </>
+                ) : null}
 
                 {project.links?.length ? (
                   <>

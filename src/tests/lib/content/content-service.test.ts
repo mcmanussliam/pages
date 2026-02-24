@@ -20,46 +20,16 @@ const {
 }));
 
 vi.mock('@/lib/content/content', () => ({
-  getProject: getProjectMock,
-  getProjectDocs: getProjectDocsMock,
-  getDoc: getDocMock,
+  contentRepository: {
+    getProject: getProjectMock,
+    getProjectDocs: getProjectDocsMock,
+    getDoc: getDocMock,
+  },
   extractTocFromContent: extractTocFromContentMock,
 }));
 
-vi.mock('@/content/otto/index.mdx', () => ({default: () => null,}), {virtual: true});
-
-vi.mock('@/content/otto/getting-started.mdx', () => ({default: () => null,}), {virtual: true});
-
-vi.mock('@/content/otto/task-modes.mdx', () => ({default: () => null,}), {virtual: true});
-
-vi.mock('@/content/otto/config-reference.mdx', () => ({default: () => null,}), {virtual: true});
-
-vi.mock('@/content/otto/command-reference.mdx', () => ({default: () => null,}), {virtual: true});
-
-vi.mock('@/content/brb/index.mdx', () => ({default: () => null,}), {virtual: true});
-
-vi.mock('@/content/brb/getting-started.mdx', () => ({default: () => null,}), {virtual: true});
-
-vi.mock('@/content/brb/config.mdx', () => ({default: () => null,}), {virtual: true});
-
-vi.mock('@/content/nd/index.mdx', () => ({default: () => null,}), {virtual: true});
-
-vi.mock('@/content/nd/getting-started.mdx', () => ({default: () => null,}), {virtual: true});
-
-vi.mock('@/content/obsidian-actions/index.mdx', () => ({default: () => null,}), {virtual: true});
-
-vi.mock('@/content/obsidian-actions/getting-started.mdx', () => ({default: () => null,}), {virtual: true});
-
-vi.mock('@/content/obsidian-actions/command-types.mdx', () => ({default: () => null,}), {virtual: true});
-
-vi.mock('@/content/obsidian-actions/hooks.mdx', () => ({default: () => null,}), {virtual: true});
-
-vi.mock('@/content/obsidian-actions/examples.mdx', () => ({default: () => null,}), {virtual: true});
-
-vi.mock('@/content/obsidian-actions/env-variables.mdx', () => ({default: () => null,}), {virtual: true});
-
 async function loadContentService() {
-  return import('@/lib/content/content-service');
+  return import('@/lib/content/services/content-service');
 }
 
 function buildDoc(projectId: string, slug: string, order: number) {

@@ -1,21 +1,22 @@
 import {notFound} from 'next/navigation';
 import Link from 'next/link';
 import type {Metadata} from 'next';
-import {getProjectIds} from '@/lib/content/content';
-import {getProjectPageData} from '@/lib/content/content-service';
+import {getProjectPageData} from '@/lib/content/services/content-service';
+import {contentRepository} from '@/lib/content/content';
 import {Badge} from '@/components/ui/badge';
 import {BreadcrumbNav} from '@/components/custom/breadcrumb-nav';
-import {getTranslator} from '@/lib/i18n/server';
+import {I18nService} from '@/lib/i18n';
+import {MarkdownHtml} from '@/components/custom/markdown-html';
 
 interface Props {
   params: Promise<{projectId: string}>;
 }
 
-const t = getTranslator();
+const t = I18nService.translator();
+export const revalidate = 300;
 
-export function generateStaticParams() {
-  const projectIds = getProjectIds();
-  return projectIds.map((id) => ({projectId: id}));
+export function generateStaticParams(): {projectId: string}[] {
+  return contentRepository.getProjectIds().map(projectId => ({projectId}));
 }
 
 export async function generateMetadata({params}: Props): Promise<Metadata> {
@@ -55,7 +56,11 @@ export default async function Root({params}: Props) {
 
       <div className="space-y-6 lg:space-y-8 mt-6">
         <article className="prose prose-neutral dark:prose-invert max-w-none prose-headings:font-semibold prose-h1:text-3xl prose-h2:text-2xl prose-h3:text-xl prose-p:text-base prose-p:leading-7">
-          <ProjectContent />
+          {projectPageData.projectHtml ? (
+            <MarkdownHtml html={projectPageData.projectHtml} />
+          ) : ProjectContent ? (
+            <ProjectContent />
+          ) : null}
         </article>
 
         {docs.length > 0 && (

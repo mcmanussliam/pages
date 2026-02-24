@@ -1,10 +1,10 @@
-import {type Locale, type StructuredI18n} from './i18n-config';
+import {type StructuredI18n} from './i18n-config';
 
 export const i18n = {
   en: {
     meta: {
       site: {
-        title: 'Please Star My Repos',
+        title: 'Portfolio',
         description: 'Documentation for projects by {username}.',
       },
       home: {
@@ -67,4 +67,12 @@ export const i18n = {
 } as const satisfies StructuredI18n;
 
 export type I18n = typeof i18n;
-export type AppMessages = I18n[Locale];
+export type TokenNamespaces = I18n[keyof I18n];
+
+type WidenMessages<T> = T extends string
+  ? string
+  : T extends object
+    ? {[K in keyof T]: WidenMessages<T[K]>}
+    : T;
+
+export type Messages = WidenMessages<TokenNamespaces>;

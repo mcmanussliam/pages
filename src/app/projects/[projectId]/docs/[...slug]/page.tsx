@@ -1,34 +1,30 @@
 import {notFound} from 'next/navigation';
 import Link from 'next/link';
 import type {Metadata} from 'next';
-import {
-  getProjectIds,
-  getProjectDocPaths,
-} from '@/lib/content/content';
-import {getDocPageData} from '@/lib/content/content-service';
+import {getDocPageData} from '@/lib/content/services/content-service';
+import {contentRepository} from '@/lib/content/content';
 import {TableOfContents} from '@/components/custom/table-of-contents';
 import {BreadcrumbNav, type BreadcrumbNavItemProps} from '@/components/custom/breadcrumb-nav';
 import {Button} from '@/components/ui/button';
-import {getTranslator} from '@/lib/i18n/server';
+import {I18nService} from '@/lib/i18n';
 import {ChevronLeft, ChevronRight} from 'lucide-react';
+import {MarkdownHtml} from '@/components/custom/markdown-html';
 
 interface Props {
   params: Promise<{projectId: string; slug: string[] }>;
 }
-const t = getTranslator();
+const t = I18nService.translator();
+export const revalidate = 300;
 
-export function generateStaticParams() {
-  const projectIds = getProjectIds();
-  const paths: {projectId: string; slug: string[]}[] = [];
-
-  for (const projectId of projectIds) {
-    const docPaths = getProjectDocPaths(projectId);
-    for (const slug of docPaths) {
-      paths.push({projectId, slug});
-    }
-  }
-
-  return paths;
+export async function generateStaticParams(): Promise<{projectId: string; slug: string[]}[]> {
+  const projectIds = contentRepository.getProjectIds();
+  const perProject = await Promise.all(
+    projectIds.map(async(projectId) => {
+      const docs = await contentRepository.getProjectDocs(projectId);
+      return docs.map((doc) => ({projectId, slug: doc.path}));
+    })
+  );
+  return perProject.flat();
 }
 
 export async function generateMetadata({params}: Props): Promise<Metadata> {
@@ -74,7 +70,11 @@ export default async function Root({params}: Props) {
       <div className="grid grid-cols-1 xl:grid-cols-[1fr_200px] gap-6 xl:gap-8">
         <div className="min-w-0">
           <article className="prose prose-neutral dark:prose-invert max-w-none prose-headings:font-semibold prose-h1:text-3xl prose-h2:text-2xl prose-h3:text-xl prose-p:text-base prose-p:leading-7">
-            <Content/>
+            {docPageData.html ? (
+              <MarkdownHtml html={docPageData.html} />
+            ) : Content ? (
+              <Content/>
+            ) : null}
           </article>
 
           {(prevDoc || nextDoc) && (

@@ -1,7 +1,7 @@
 import type {Metadata} from 'next';
-import {getTranslator} from '@/lib/i18n/server';
+import {I18nService} from '@/lib/i18n';
 
-const t = getTranslator();
+const t = I18nService.translator();
 
 export const metadata: Metadata = {
   title: t('meta.notFound.title'),

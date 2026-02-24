@@ -1,17 +1,12 @@
 import {notFound} from 'next/navigation';
 import type {ReactNode} from 'react';
-import {getProjectIds} from '@/lib/content/content';
-import {getProjectPageData} from '@/lib/content/content-service';
+import {getProjectPageData} from '@/lib/content/services/content-service';
 import {ProjectNav} from '@/components/custom/project-nav';
 
 interface Props {
   children: ReactNode;
-  params: Promise<{projectId: string}>;
-}
 
-export function generateStaticParams() {
-  const projectIds = getProjectIds();
-  return projectIds.map((id) => ({projectId: id}));
+params: Promise<{projectId: string}>;
 }
 
 export default async function Layout({children, params}: Props) {

@@ -4,6 +4,103 @@ import parser from "@typescript-eslint/parser";
 import nextVitals from "eslint-config-next/core-web-vitals";
 import nextTs from "eslint-config-next/typescript";
 
+const localPlugin = {
+  rules: {
+    "interface-member-spacing": {
+      meta: {
+        type: "layout",
+        docs: {
+          description: "Require a blank line between interface members",
+        },
+        fixable: "whitespace",
+        schema: [],
+      },
+      create(context) {
+        return {
+          TSInterfaceBody(node) {
+            const members = node.body;
+            for (let index = 1; index < members.length; index += 1) {
+              const previousMember = members[index - 1];
+              const currentMember = members[index];
+              if (!previousMember?.loc || !currentMember?.loc) {
+                continue;
+              }
+
+              const lineDistance = currentMember.loc.start.line - previousMember.loc.end.line;
+              if (lineDistance >= 2) {
+                continue;
+              }
+
+              context.report({
+                node: currentMember,
+                message: "Interface members must be separated by a blank line.",
+                fix: (fixer) => fixer.insertTextBefore(currentMember, "\n"),
+              });
+            }
+          },
+        };
+      },
+    },
+    "max-exported-functions": {
+      meta: {
+        type: "suggestion",
+        docs: {
+          description: "Prefer class or module object when exporting many functions",
+        },
+        schema: [
+          {
+            type: "object",
+            properties: {
+              max: {type: "number"},
+            },
+            additionalProperties: false,
+          },
+        ],
+      },
+      create(context) {
+        let exportedFunctionCount = 0;
+        const [{max = 4} = {}] = context.options;
+
+        function maybeCountFunctionExport(node) {
+          if (!node || node.type !== "ExportNamedDeclaration" || !node.declaration) {
+            return;
+          }
+
+          if (node.declaration.type === "FunctionDeclaration") {
+            exportedFunctionCount += 1;
+            return;
+          }
+
+          if (node.declaration.type !== "VariableDeclaration") {
+            return;
+          }
+
+          for (const declaration of node.declaration.declarations) {
+            const initType = declaration.init?.type;
+            if (initType === "ArrowFunctionExpression" || initType === "FunctionExpression") {
+              exportedFunctionCount += 1;
+            }
+          }
+        }
+
+        return {
+          ExportNamedDeclaration: maybeCountFunctionExport,
+          "Program:exit"(node) {
+            if (exportedFunctionCount <= max) {
+              return;
+            }
+
+            context.report({
+              node,
+              message: `File exports ${exportedFunctionCount} functions. Prefer class/module grouping when above ${max}.`,
+            });
+          },
+        };
+      },
+    },
+  },
+};
+
 const eslintConfig = defineConfig([
   ...nextVitals,
   ...nextTs,
@@ -25,8 +122,10 @@ const eslintConfig = defineConfig([
     },
     plugins: {
       "@typescript-eslint": tsPlugin,
+      local: localPlugin,
     },
     rules: {
+      "local/interface-member-spacing": "error",
       '@typescript-eslint/no-unused-vars': ['warn', {argsIgnorePattern: '^_', varsIgnorePattern: '^_'}],
       '@typescript-eslint/no-explicit-any': 'error',
       '@typescript-eslint/require-await': 'error',
@@ -57,7 +156,7 @@ const eslintConfig = defineConfig([
         {
           accessibility: 'explicit',
           overrides: {
-            constructors: 'no-public',
+            constructors: 'explicit',
           },
         },
       ],
@@ -142,6 +241,8 @@ const eslintConfig = defineConfig([
       'semi': ['error', 'always'],
       'block-scoped-var': 'error',
       'curly': ['error', 'all'],
+      'no-else-return': ['error', {allowElseIf: false}],
+      'no-useless-return': 'error',
       'guard-for-in': 'error',
       'no-alert': 'error',
       'no-multi-spaces': 'error',
@@ -189,6 +290,7 @@ const eslintConfig = defineConfig([
       'eol-last': ['error', 'always'],
       'complexity': ['warn', 10],
       'max-lines-per-function': ['warn', 200],
+      'max-lines': ['warn', {max: 400, skipBlankLines: true, skipComments: true}],
       'consistent-return': 'error',
       '@typescript-eslint/consistent-type-imports': ['error', {prefer: 'type-imports', fixStyle: 'inline-type-imports'}],
       'no-duplicate-imports': 'error',
@@ -198,6 +300,32 @@ const eslintConfig = defineConfig([
       'no-implied-eval': 'error',
     },
   }
+  ,
+  {
+    files: ['src/lib/**/*.{ts,tsx}', 'src/config/**/*.{ts,tsx}'],
+    rules: {
+      '@typescript-eslint/explicit-module-boundary-types': 'warn',
+      "local/max-exported-functions": ["warn", {max: 4}],
+    },
+  },
+  {
+    files: ['src/components/ui/**/*.{ts,tsx}'],
+    rules: {
+      'max-lines': 'off',
+    },
+  },
+  {
+    files: [
+      'src/**/*.test.{ts,tsx}',
+      'src/**/tests/**/*.{ts,tsx}',
+    ],
+    rules: {
+      'complexity': 'off',
+      'max-lines-per-function': 'off',
+      'max-lines': 'off',
+      '@typescript-eslint/explicit-module-boundary-types': 'off',
+    },
+  },
 ]);
 
 export default eslintConfig;

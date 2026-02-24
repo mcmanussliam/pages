@@ -3,17 +3,19 @@
 import Link from 'next/link';
 import {usePathname} from 'next/navigation';
 import type {Project, Doc} from '@/lib/content/content.types';
-import {useI18n} from '@/lib/i18n/i18n-provider';
+import {useI18n} from '@/lib/i18n';
 import {cn} from '@/lib/utils/utils';
 
 interface ProjectNavProps {
   project: Project;
-  docs: Doc[];
+
+docs: Doc[];
 }
 
 export function ProjectNav({project, docs}: ProjectNavProps) {
   const pathname = usePathname();
   const {t} = useI18n();
+
   const overviewPath = `/projects/${project.id}`;
   const isOverviewActive = pathname === overviewPath || pathname === `${overviewPath}/`;
 

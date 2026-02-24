@@ -1,17 +1,4 @@
-import {defaultLocale, type Locale} from './i18n-config';
-import {I18nService, type Token} from './i18n-service';
-import type {AppMessages} from './locales';
-
-export type MessageKey = Token;
-
-export function getMessages(locale: Locale = defaultLocale): AppMessages {
-  return I18nService.locale(locale);
-}
-
-export function t(
-  messages: AppMessages,
-  key: MessageKey,
-  values?: Record<string, string | number>
-): string {
-  return I18nService.t(messages, key, values);
-}
+export {I18nProvider, useI18n} from './i18n-provider';
+export {defaultLocale, locales, type Locale} from './i18n-config';
+export {I18nService, type Token} from './i18n-service';
+export {i18n, type I18n, type Messages, type TokenNamespaces} from './locales';

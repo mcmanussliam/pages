@@ -1,10 +1,7 @@
 import NavigationBar from '@/components/custom/navigation-bar';
 import {ThemeProvider} from '@/components/theme-provider';
 import {githubConfig} from '@/config/github.config';
-import {defaultLocale} from '@/lib/i18n/i18n-config';
-import {I18nProvider} from '@/lib/i18n/i18n-provider';
-import {getMessages} from '@/lib/i18n/index';
-import {getTranslator} from '@/lib/i18n/server';
+import {defaultLocale, I18nProvider, I18nService} from '@/lib/i18n';
 import {JetBrains_Mono} from 'next/font/google';
 import type {Metadata} from 'next';
 import type {ReactNode} from 'react';
@@ -13,8 +10,9 @@ import Link from 'next/link';
 import './globals.css';
 
 const jetbrainsMono = JetBrains_Mono({subsets: ['latin'], variable: '--font-sans'});
-const t = getTranslator();
-const messages = getMessages(defaultLocale);
+
+const t = I18nService.translator();
+const messages = I18nService.locale(defaultLocale);
 
 export const metadata: Metadata = {
   title: {
