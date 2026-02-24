@@ -29,10 +29,10 @@ export const projectsConfig: readonly ProjectsConfig[] = [
     release: 'https://crates.io/crates/nd-cli',
     documentation: 'docs'
   },
-  // {
-  //   repository: 'https://github.com/mcmanussliam/obsidian-actions',
-  //   documentation: 'docs'
-  // },
+  {
+    repository: 'https://github.com/mcmanussliam/obsidian-actions',
+    documentation: 'docs'
+  },
   // {
   //   repository: 'https://github.com/mcmanussliam/otto',
   //   release: 'https://crates.io/otto-cli',
