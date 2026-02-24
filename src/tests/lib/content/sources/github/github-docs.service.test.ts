@@ -5,6 +5,16 @@ const {fetchJsonCachedMock, fetchTextCachedMock} = vi.hoisted(() => ({
   fetchTextCachedMock: vi.fn(),
 }));
 
+vi.mock('@/config/projects.config', () => ({
+  projectsConfig: [
+    {
+      repository: 'https://github.com/mcmanussliam/brb',
+      release: 'https://crates.io/crates/brb-cli',
+      documentation: 'docs',
+    },
+  ],
+}));
+
 vi.mock('@/lib/github/github-cache', () => ({
   fetchJsonCached: fetchJsonCachedMock,
   fetchTextCached: fetchTextCachedMock,
