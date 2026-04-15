@@ -1,16 +1,42 @@
-import Link from "next/link";
+const lines = [
+  { id: "whoami", text: "% whoami" },
+  { id: "name", text: "liam mcmanus" },
+  { id: "gap-1", text: "" },
+  { id: "ls", text: "% ls" },
+  { id: "docs", text: "docs" },
+  { id: "about-file", text: "about.txt" },
+  { id: "gap-2", text: "" },
+  { id: "cat-about", text: "% cat about.txt" },
+  { id: "about-1", text: "i made some small projects," },
+  { id: "about-2", text: "i wrote docs for them," },
+  { id: "about-3", text: "and put them here." },
+  { id: "gap-3", text: "" },
+  { id: "idle", text: "% █" },
+] as const;
 
 export default function HomePage() {
   return (
-    <div className="flex flex-col justify-center text-center flex-1 px-6">
-      <h1 className="text-3xl font-bold mb-4">Hey, I&apos;m Liam</h1>
-      <p className="text-fd-muted-foreground">
-        Open{" "}
-        <Link href="/docs" className="font-medium underline">
-          /docs
-        </Link>{" "}
-        to browse project documentation.
-      </p>
-    </div>
+    <main className="flex flex-1 bg-fd-background py-12 text-fd-foreground md:py-16">
+      <div className="mx-auto flex w-full max-w-(--fd-layout-width) items-start px-4">
+        <div className="font-mono text-sm leading-7 md:text-[15px]">
+          {lines.map((line) => {
+            if (line.text === "") {
+              return <div key={line.id} className="h-7" />;
+            }
+
+            return (
+              <div
+                key={line.id}
+                className={
+                  line.text.startsWith("%") ? "" : "text-fd-muted-foreground"
+                }
+              >
+                {line.text}
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </main>
   );
 }
