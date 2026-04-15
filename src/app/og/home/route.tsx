@@ -1,17 +1,8 @@
-import { notFound } from "next/navigation";
 import { ImageResponse } from "next/og";
-import { getPageImage, source } from "@/lib/source";
 
 export const revalidate = false;
 
-export async function GET(
-  _req: Request,
-  { params }: RouteContext<"/og/docs/[...slug]">,
-) {
-  const { slug } = await params;
-  const page = source.getPage(slug.slice(0, -1));
-  if (!page) notFound();
-
+export async function GET() {
   return new ImageResponse(
     <div
       style={{
@@ -36,20 +27,18 @@ export async function GET(
             letterSpacing: "-0.04em",
           }}
         >
-          {page.data.title}
+          mcmanussliam
         </div>
-        {page.data.description ? (
-          <div
-            style={{
-              maxWidth: 900,
-              fontSize: 30,
-              lineHeight: 1.35,
-              color: "rgba(255,255,255,0.62)",
-            }}
-          >
-            {page.data.description}
-          </div>
-        ) : null}
+        <div
+          style={{
+            maxWidth: 900,
+            fontSize: 30,
+            lineHeight: 1.35,
+            color: "rgba(255,255,255,0.62)",
+          }}
+        >
+          small software projects, docs, and experiments.
+        </div>
       </div>
 
       <div
@@ -66,11 +55,4 @@ export async function GET(
       height: 630,
     },
   );
-}
-
-export function generateStaticParams() {
-  return source.getPages().map((page) => ({
-    lang: page.locale,
-    slug: getPageImage(page).segments,
-  }));
 }

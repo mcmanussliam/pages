@@ -1,3 +1,5 @@
+import type { Metadata } from "next";
+
 const lines = [
   { id: "whoami", text: "% whoami" },
   { id: "name", text: "liam mcmanus" },
@@ -13,6 +15,13 @@ const lines = [
   { id: "gap-3", text: "" },
   { id: "idle", text: "% █" },
 ] as const;
+
+export const metadata: Metadata = {
+  description: "Small software projects, docs, and experiments.",
+  openGraph: {
+    images: "/og/home",
+  },
+};
 
 export default function HomePage() {
   return (
