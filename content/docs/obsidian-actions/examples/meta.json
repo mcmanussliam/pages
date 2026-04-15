@@ -1,0 +1,5 @@
+{
+  "title": "Examples",
+  "icon": "Lightbulb",
+  "pages": ["editor-actions", "shell-actions", "automation-patterns"]
+}

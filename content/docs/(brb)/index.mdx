@@ -4,55 +4,18 @@ icon: CircleQuestionMark
 description: Wrap a long-running command, wait for completion, and notify the channels you care about.
 ---
 
-Be Right Back is a small command wrapper for terminal work you do not want to watch in real time. It runs your command, waits for it to finish, sends a completion event to one or more channels, and exits with the same code as the wrapped command.
-
-## Why Use Be Right Back
-
-- long test suites
-- builds and release jobs
-- migrations and data imports
-- deploy commands
-- any task that should notify you when it finishes or fails
-
-<Cards>
-  <Card href="/docs/quick-start" title="Quick Start">
-    Install Be Right Back, create a config file, and send your first notification.
-  </Card>
-  <Card href="/docs/guides/command-reference" title="CLI Reference">
-    Learn the command model, subcommands, and channel override behaviour.
-  </Card>
-  <Card href="/docs/guides/config" title="Configuration">
-    Configure desktop, webhook, and custom channels with validated YAML.
-  </Card>
-  <Card href="/docs/guides/event-payload" title="Event Payload">
-    See the JSON schema sent to webhook and custom integrations.
-  </Card>
-</Cards>
+`brb` is a small command wrapper for terminal work you do not want to watch in
+real time. It runs your command, waits for it to finish, sends a completion event
+to one or more channels, and exits with the same code as the wrapped command.
 
 ## How It Works
 
-1. Be Right Back loads your global config.
+1. `brb` loads your global config.
 2. It resolves the selected channels from `default_channels` or repeated `--channel` flags.
 3. It runs the wrapped command with inherited `stdin`, `stdout`, and `stderr`.
 4. It builds a completion event with command, status, timing, exit code, working directory, and host information.
 5. It delivers that event to each selected channel independently.
 6. It prints a delivery summary and exits with the wrapped command's exit code.
-
-## Key Behaviours
-
-- Be Right Back is a wrapper, not a job runner. Your command still runs normally.
-- Notification delivery happens after the command exits, including when the command fails.
-- A notification failure does not change the final process exit code.
-- If the wrapped command cannot be started at all, `brb` reports the spawn error and exits with `127`.
-- Repeated `--channel` flags override configured defaults for that invocation only.
-
-## Channel Types
-
-| Type | Purpose | Best for |
-|---|---|---|
-| `desktop` | Local desktop notification | Personal workstation alerts |
-| `webhook` | HTTP JSON delivery | Slack bridges, ntfy, internal services, automation endpoints |
-| `custom` | Execute your own notifier process and send JSON on `stdin` | Anything that needs custom formatting or transport |
 
 ## Platform Support
 
@@ -61,10 +24,6 @@ Be Right Back is a small command wrapper for terminal work you do not want to wa
 | `desktop` | Supported with `notify-send` | Supported with `osascript` | Not implemented yet |
 | `webhook` | Supported | Supported | Supported |
 | `custom` | Supported | Supported | Supported |
-
-<Callout title="What Be Right Back Preserves">
-  Be Right Back does not buffer or hide your command output. The wrapped process inherits your terminal, so logs, prompts, and interactive input still work normally.
-</Callout>
 
 <Callout type="warning" title="Desktop Notifications Depend On System Tools">
   On macOS, `desktop` uses `osascript`. On Linux, it uses `notify-send`. If that command is missing or fails, only that channel fails; the wrapped command result is still preserved.

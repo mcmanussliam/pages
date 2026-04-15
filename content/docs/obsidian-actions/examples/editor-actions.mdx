@@ -1,0 +1,53 @@
+---
+title: Editor Actions
+description: Small JavaScript examples that use editor and vault context.
+---
+
+These examples are good starting points for manual `js` actions.
+
+## Show The Current File Name
+
+Display the current file name in an Obsidian notice.
+
+```javascript lineNumbers=1
+new Notice(`Current file: {{{file_name_with_ext}}}`);
+```
+
+## Count The Selected Words
+
+Show the word count for the current selection.
+
+```javascript lineNumbers=1
+new Notice(`Selected words: {{word_count}}`);
+```
+
+## Insert A Timestamp At The Cursor
+
+Insert the current timestamp at the cursor position.
+
+```javascript lineNumbers=1
+const editor = app.workspace.activeEditor?.editor;
+
+if (!editor) {
+  new Notice("No active editor");
+} else {
+  editor.replaceSelection(`{{timestamp}}`);
+  new Notice("Inserted timestamp");
+}
+```
+
+## Append A Review Checkbox
+
+Append a review task to the end of the active note.
+
+```javascript lineNumbers=1
+const file = app.workspace.getActiveFile();
+
+if (!file) {
+  new Notice("No active file");
+} else {
+  const content = await app.vault.read(file);
+  await app.vault.modify(file, `${content}\n- [ ] Review\n`);
+  new Notice("Added review checkbox");
+}
+```

@@ -3,7 +3,7 @@ title: Configuration
 description: Global YAML config schema, channel definitions, environment interpolation, and validation rules.
 ---
 
-Be Right Back uses one global YAML configuration file. It is loaded before any wrapped command or channel management command runs.
+`brb` uses one global YAML configuration file. It is loaded before any wrapped command or channel management command runs.
 
 Print the resolved path:
 
@@ -75,7 +75,7 @@ For `type: webhook`:
 
 - `method` defaults to `POST` when omitted.
 - `headers` are optional.
-- Be Right Back sends the completion event as a JSON request body.
+- `brb` sends the completion event as a JSON request body.
 - Non-2xx responses are treated as delivery failures.
 - Invalid HTTP methods or invalid header names and values fail fast.
 
@@ -113,7 +113,7 @@ For `type: custom`:
 - `exec` can be an executable name, a relative path, or an absolute path.
 - `args` are passed as command-line arguments.
 - `env` adds or overrides environment variables for the child process.
-- Be Right Back writes exactly one JSON completion event to the notifier's stdin.
+- `brb` writes exactly one JSON completion event to the notifier's stdin.
 - Child stdout is discarded.
 - Child stderr is captured for error reporting.
 - Relative paths are resolved from the working directory where `brb` is launched.
@@ -171,12 +171,7 @@ channels:
   # custom executable channel example.
   write:
     type: custom
-
-    # executable to be ran on notify
-    # relative path (e.g. `./scripts/notifier.sh`): relative to where `brb` is run
-    # absolute path: used directly
-    exec: ./abs/path/to/examples/write-to-logs.sh
-
+    exec: abs/path/to/examples/write-to-logs.sh # executable to be ran on notify
     args: [] # optional cli args passed to `exec`.
 
     # optional environment overrides for the child process.

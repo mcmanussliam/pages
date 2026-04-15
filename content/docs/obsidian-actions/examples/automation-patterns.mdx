@@ -1,0 +1,67 @@
+---
+title: Automation Patterns
+description: Examples for startup, scheduled, and file-triggered actions.
+---
+
+Build these as manual actions first, then switch the hook once the behavior is
+correct.
+
+## Show A Startup Notice
+
+Suggested hook: `startup`
+
+Display a notice when the plugin loads.
+
+```javascript lineNumbers=1
+new Notice("Obsidian Actions loaded");
+```
+
+## Run A Scheduled Backup Script
+
+Suggested hook: `interval`
+
+Suggested schedule:
+
+```text lineNumbers=1
+0 * * * *
+```
+
+Example:
+
+Run a backup script once per hour.
+
+```bash lineNumbers=1
+/absolute/path/to/backup-vault.sh
+```
+
+## Log File Changes
+
+Suggested hook: `modifyFile`
+
+Log a file change and show a notice when the action runs.
+
+```javascript lineNumbers=1
+console.log(`Modified file: {{{relative_path}}}`);
+new Notice("File change action ran");
+```
+
+## Update Frontmatter On New Notes
+
+Suggested hook: `createFile`
+
+Add a basic `created` field when a new note does not already have frontmatter.
+
+```javascript lineNumbers=1
+const file = app.workspace.getActiveFile();
+
+if (!file) {
+  return;
+}
+
+const content = await app.vault.read(file);
+
+if (!content.startsWith("---")) {
+  const frontmatter = `---\ncreated: {{timestamp}}\n---\n\n`;
+  await app.vault.modify(file, `${frontmatter}${content}`);
+}
+```

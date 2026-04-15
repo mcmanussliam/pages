@@ -1,0 +1,58 @@
+---
+title: Triggers
+description: Reference for when actions run and how each trigger behaves.
+---
+
+The `hook` field controls when an action executes.
+
+## Hooks
+
+| Hook | Runs When |
+|---|---|
+| `manual` | You trigger the action from Obsidian |
+| `startup` | The plugin loads during Obsidian startup |
+| `interval` | A matching cron schedule fires |
+| `createFile` | A vault file is created |
+| `modifyFile` | A vault file is modified |
+| `deleteFile` | A vault file is deleted |
+| `renameFile` | A vault file is renamed |
+
+## Manual
+
+Use `manual` while building and testing an action. It is the most predictable
+trigger and the easiest place to debug behavior.
+
+Manual actions are exposed as Obsidian commands after restart.
+
+## Startup
+
+Use `startup` for actions that should run once when Obsidian opens, such as
+maintenance checks or environment setup.
+
+## Interval
+
+`interval` actions require a cron expression.
+
+```text
+* * * * *
+```
+
+This example runs once per minute.
+
+Validate schedules with [crontab.guru](https://crontab.guru/examples.html).
+
+## File Events
+
+The file hooks respond to vault events and are useful for automations tied to
+note creation, edits, deletion, or renames.
+
+<Callout type="info" title="Context Comes From Current App State">
+  File hooks are triggered by vault events, but runtime variables still reflect
+  the current active file and editor context when those are available. Do not
+  assume the event file path is injected automatically.
+</Callout>
+
+<Callout type="warning" title="Start Manual First">
+  Build the action under `manual` first, confirm it behaves correctly, then move
+  it to `startup`, `interval`, or a file hook.
+</Callout>

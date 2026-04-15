@@ -1,0 +1,74 @@
+---
+title: Execution Types
+description: Choose between JavaScript actions and shell actions.
+---
+
+Every action runs as either `js` or `shell`.
+
+## Comparison
+
+| Type | Best For | Notes |
+|---|---|---|
+| `js` | Obsidian-aware workflows | Runs inside the plugin and can use exposed Obsidian APIs and helpers |
+| `shell` | External scripts and command-line tools | Runs through the host shell |
+
+## JavaScript Actions
+
+`js` actions run inside the plugin runtime. They are the right choice when the
+action needs access to Obsidian objects or in-app feedback.
+
+Available helpers include:
+
+- `app`
+- `vault`
+- `workspace`
+- `metadataCache`
+- `fileManager`
+- `Notice`
+- `Modal`
+- `Setting`
+- `FuzzySuggestModal`
+- `exec`
+
+Example:
+
+```javascript
+new Notice(`Processing {{{file_name_with_ext}}}`);
+console.log(app.vault.getFiles().length);
+```
+
+Use `js` when the action needs Obsidian context and a small amount of logic.
+
+## Shell Actions
+
+`shell` actions run as command text on the host system.
+
+Example:
+
+```bash
+git add .
+git commit -m "Update notes"
+git push
+```
+
+Use `shell` when the workflow already exists as a script or depends on external
+tools.
+
+## Choosing A Type
+
+Choose `js` if the action needs:
+
+- Obsidian APIs
+- notices or modals
+- logic around the current file or editor state
+
+Choose `shell` if the action is mainly:
+
+- a script wrapper
+- a CLI workflow
+- a system integration outside Obsidian
+
+<Callout type="warning" title="Shell Environment Is Minimal">
+  Shell actions should not depend on aliases, interactive shell setup, or a
+  custom `PATH` unless you configure those explicitly in the command.
+</Callout>

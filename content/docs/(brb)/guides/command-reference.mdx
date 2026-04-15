@@ -1,28 +1,17 @@
 ---
 title: CLI Reference
-description: Reference for the Be Right Back command model, built-in subcommands, and runtime behaviour.
+description: Complete reference for the Be Right Back command model, built-in commands, and runtime behaviour.
 ---
 
-If you want installation and first-run instructions, start with [Quick Start](/docs/quick-start).
+If you're looking for installation and first-run setup, start with [Quick Start](/docs/quick-start).
 
-## Command Model
-
-```bash
-brb [--channel <channel-id> ...] <command> [args...]
-```
-
-Be Right Back has two modes:
-
-- run mode, where it wraps another command
-- management mode, where it runs built-in commands such as `init`, `channels`, and `config`
-
-## Run Mode
+## Running
 
 ```bash
 brb <command> [args...]
 ```
 
-Use `brb` directly in front of the command you want to monitor:
+Place `brb` directly before any command you want to monitor:
 
 ```bash
 brb cargo test
@@ -30,17 +19,21 @@ brb pnpm build
 brb python script.py
 ```
 
-Runtime behaviour:
+### Runtime Behaviour
 
-1. Be Right Back loads and validates the global config.
-2. It resolves channels from `default_channels` or `--channel`.
-3. It runs the wrapped command with inherited terminal I/O.
-4. It builds a completion event after the command exits.
-5. It attempts delivery to each selected channel.
-6. It exits with the wrapped command's exit code.
+When you run a wrapped command, `brb`:
 
-<Callout title="Exit Code Contract">
-  Notification failures do not overwrite the wrapped command result. If the wrapped command exits with `17`, `brb` exits with `17`. If the wrapped command cannot be spawned, `brb` exits with `127`.
+1. Loads and validates the global config.
+2. Resolves channels from `default_channels` or any `--channel` flags.
+3. Runs the wrapped command with inherited terminal I/O.
+4. Builds a completion event after the command exits.
+5. Attempts delivery to each selected channel.
+6. Exits with the wrapped command's exit code.
+
+<Callout title="Exit Codes">
+Notification delivery failures never replace the wrapped command result. If the
+wrapped command exits with `17`, `brb` exits with `17`. If the wrapped command
+cannot be started, `brb` exits with `127`.
 </Callout>
 
 ## Global Option
@@ -53,32 +46,36 @@ Use `--channel` to override `default_channels` for a single run.
 brb --channel desktop --channel ci-webhook cargo test
 ```
 
-Rules:
+### Rules
 
-- If you pass one or more `--channel` flags, only those channels are used.
-- If you pass no `--channel` flags, `default_channels` is used.
-- If a selected channel ID is not defined in config, Be Right Back exits with an error before running the command.
+- If one or more `--channel` flags are provided, only those channels are used.
+- If no `--channel` flags are provided, `default_channels` is used.
+- If any selected channel ID does not exist in config, `brb` exits with an error before running the command.
 
 ## Pass Through Command Flags
 
 ```bash
-brb [--channel <channel-id> ...] -- <command-flags>
+brb [--channel <channel-id> ...] -- <command> [args...]
 ```
 
-If the wrapped command itself starts with flags, use `--` to separate `brb` flags from wrapped-command flags.
+If the wrapped command itself begins with flags, use `--` to separate `brb` flags from wrapped-command flags.
+
+Example:
 
 ```bash
 brb --channel desktop -- --version
 ```
 
-In that example, `--version` is passed to the wrapped command, not to Be Right Back itself.
+In this example, `--version` is passed to the wrapped command, not to `brb`.
 
 ## Built-In Commands
 
-| Command | What it does |
+| Command | Description |
 |---|---|
-| `brb init` | Creates the default global config file if it does not already exist. If the file already exists, `brb` prints the existing path and exits successfully. |
-| `brb channels [list]` | Lists configured channels, their types, and which ones are in `default_channels`. `list` is optional, so `brb channels` and `brb channels list` behave the same way. |
-| `brb channels validate` | Loads and validates the config file, then exits. Use this after editing config to confirm that channel IDs, schema fields, and interpolation values are valid. |
-| `brb channels test <channel-id>` | Sends a synthetic success event to one configured channel. Use this to verify delivery without waiting for a real long-running command. If the channel does not exist, `brb` exits with an error. |
-| `brb config [path]` | Prints the active global config path. `path` is optional, so `brb config` and `brb config path` are equivalent. |
+| `brb init` | Creates the default global config file if it does not already exist. If it already exists, prints the existing path and exits successfully. |
+| `brb channels` | Lists configured channels, their types, and which ones are included in `default_channels`. |
+| `brb channels list` | Same as `brb channels`. |
+| `brb channels validate` | Loads and validates the config, then exits. Useful after editing config files. |
+| `brb channels test <channel-id>` | Sends a synthetic success event to one configured channel so you can verify delivery without waiting for a real command. |
+| `brb config` | Prints the active global config path. |
+| `brb config path` | Same as `brb config`. |

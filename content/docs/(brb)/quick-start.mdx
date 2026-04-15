@@ -4,7 +4,12 @@ icon: Rocket
 description: Install Be Right Back, initialise the global config, and send your first notification in a few minutes.
 ---
 
-## Install
+## Install the Tool [step]
+
+Before you begin, make sure you have `cargo` installed. If you don't already
+have it, follow the official installation guide [here](https://doc.rust-lang.org/cargo/getting-started/installation.html).
+
+Then install `brb`:
 
 ```bash
 cargo install brb-cli
@@ -16,10 +21,6 @@ Confirm the CLI is available:
 brb --version
 ```
 
-<Callout title="What You Need">
-  You need Cargo to install the CLI. Desktop notifications also depend on system tools: `notify-send` on Linux and `osascript` on macOS.
-</Callout>
-
 ## Create Your Config [step]
 
 Initialise the global config file:
@@ -28,36 +29,14 @@ Initialise the global config file:
 brb init
 ```
 
-Print the active path:
+This command only creates the file if it does not already exist, so it is safe
+to run multiple times. To see where your config file is stored:
 
 ```bash
 brb config path
 ```
 
-`brb init` only creates the file if it does not already exist. Running it again is safe.
-
-<Tabs items={["macOS / Linux", "Windows"]}>
-  <Tab>
-    The config path is resolved from your platform config directory. On Linux this is typically `~/.config/brb/config.yml`. On macOS it is typically `~/Library/Application Support/brb/config.yml`.
-  </Tab>
-  <Tab>
-    The config path is resolved from your platform config directory, typically under `%APPDATA%\\brb\\config.yml`.
-  </Tab>
-</Tabs>
-
-## Run Your First Command [step]
-
-```bash
-brb cargo test
-```
-
-If you do not pass any `--channel` flags, Be Right Back uses the channel IDs listed in `default_channels`.
-
-When the command finishes, Be Right Back sends a completion event to every selected channel and exits with the same code as `cargo test`.
-
-## A Good First Config [step]
-
-If you want the fastest possible first run, start with a local desktop-only config:
+For the quickest possible setup, start with a simple desktop-only config:
 
 ```yaml title="config.yml" lineNumbers=1
 version: 1
@@ -68,49 +47,37 @@ channels:
     type: desktop
 ```
 
-## Override Channels For One Run [step]
-
-```bash
-brb --channel desktop --channel ci-webhook pnpm test
-```
-
-Channel selection rules:
-
-- If one or more `--channel` flags are provided, only those channels are used.
-- If no `--channel` flags are provided, `default_channels` is used.
-- If any selected channel ID does not exist in config, Be Right Back exits before running the wrapped command.
-
 ## Validate And Test Your Setup [step]
 
-After editing config, validate it:
+After editing your config, validate it:
 
 ```bash
 brb channels validate
 ```
 
-To verify one channel without waiting for a real build or test run:
+To test a specific channel without running a real command:
 
 ```bash
 brb channels test desktop
 ```
 
-This sends a synthetic success event without running a real command.
+This sends a fake success notification so you can confirm everything is working.
 
-## Common Commands
+## Run Your First Command [step]
 
-| Goal | Command |
-|---|---|
-| Run with configured defaults | `brb cargo test` |
-| Use one specific channel | `brb --channel desktop cargo test` |
-| Use multiple channels | `brb --channel desktop --channel ci-webhook pnpm test` |
-| Validate config | `brb channels validate` |
-| List channels | `brb channels list` |
-| Send a test notification | `brb channels test desktop` |
-| Print config path | `brb config path` |
+```bash
+brb cargo test # `cargo test` can be whatever command you want.
+```
 
-## Troubleshooting
+cargo test is just an example - you can replace it with any command.
 
-- If `brb init` succeeds but notifications do not arrive, run `brb channels test <channel-id>` first.
-- If `desktop` delivery fails on Linux, make sure `notify-send` is installed.
-- If `desktop` delivery fails on macOS, make sure `osascript` is available and notifications are allowed for your terminal app.
-- If config loading fails, check for unknown YAML fields and missing environment variables.
+If you do not provide any `--channel` flags, Be Right Back uses the channel IDs
+listed in `default_channels`.
+
+When the command finishes, Be Right Back sends a completion event to each
+selected channel and exits with the same status code as the wrapped command.
+
+## That's it! 🎉 [step]
+
+Now you are ready to use `brb`. Head to [Configuration](/docs/guides/config) to
+learn how to customise channels, defaults, and behaviour.

@@ -1,0 +1,118 @@
+---
+title: Quick Start
+icon: Rocket
+description: Install the plugin, create a first action, and verify the setup.
+---
+
+## Install The Plugin [step]
+
+### Community Plugin
+
+Since this plugin isn't officially released in the Community Plugins store yet,
+the easiest way to install it is with Obsidian [BRAT](https://obsidian.md/plugins?id=obsidian42-brat),
+which lets you install plugins directly from GitHub.
+
+After BRAT is enabled:
+
+- Open Settings
+- Go to BRAT
+- Click Add Beta Plugin
+  - You'll be asked for the plugin's GitHub repository URL. (https://github.com/mcmanussliam/obsidian-actions)
+- Install it
+
+### Manual Install
+
+Copy the plugin into vault/.obsidian/plugins/actions:
+
+<Files>
+  <Folder name=".obsidian" defaultOpen>
+    <Folder name="plugins" defaultOpen>
+      <Folder name="actions" defaultOpen>
+        <File name="main.js" />
+        <File name="styles.css" />
+        <File name="manifest.json" />
+      </Folder>
+    </Folder>
+  </Folder>
+</Files>
+
+### Manual Install
+
+Copy the plugin into `<vault>/.obsidian/plugins/actions`:
+
+<Files>
+  <Folder name=".obsidian" defaultOpen>
+    <Folder name="plugins" defaultOpen>
+      <Folder name="actions" defaultOpen>
+        <File name="main.js" />
+        <File name="styles.css" />
+        <File name="manifest.json" />
+      </Folder>
+    </Folder>
+  </Folder>
+</Files>
+
+Then enable `Obsidian Actions` in Community Plugins.
+
+## Create Your First Action [step]
+
+1. Open `Settings -> Actions`.
+2. Click `Create`.
+3. Fill in the action:
+
+| Field | Required | Notes |
+|---|---|---|
+| `name` | Yes | Display name shown in settings and commands |
+| `hook` | Yes | When the action runs |
+| `type` | Yes | `js` or `shell` |
+| `code` | Yes | The action body |
+| `schedule` | For `interval` only | Cron expression |
+| `enabled` | Yes | Whether the action is active |
+| `icon` | No | Optional Lucide icon name |
+| `description` | No | Optional internal description |
+
+4. Save the action.
+5. Restart Obsidian.
+
+## Create A Test Action [step]
+
+Start with a manual JavaScript action:
+
+```javascript
+new Notice("Action ran");
+```
+
+Use these fields:
+
+- `hook`: `manual`
+- `type`: `js`
+- `enabled`: `true`
+
+After restarting Obsidian, open the command palette and run the action by name.
+
+You can also use the play button in the settings screen to test directly.
+
+## Add Runtime Variables [step]
+
+Action code is rendered before execution, so you can reference values from the
+current vault and editor state.
+
+```bash
+echo "Current file: {{{relative_path}}}"
+```
+
+Use triple braces when you want the raw value inserted directly.
+
+## Move To Automatic Hooks [step]
+
+Once a manual action behaves correctly, move it to `startup`, `interval`, or a
+file hook.
+
+That keeps debugging simple and reduces the risk of noisy or repeated runs while
+you are still developing the action.
+
+<Callout type="warning" title="Changes Need A Restart">
+  Adding, renaming, enabling, disabling, or retargeting an action does not
+  fully re-register behavior live. Restart Obsidian before relying on the new
+  command or hook.
+</Callout>

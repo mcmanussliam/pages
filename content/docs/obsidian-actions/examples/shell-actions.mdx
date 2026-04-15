@@ -1,0 +1,47 @@
+---
+title: Shell Actions
+description: Examples for opening tools and calling external scripts.
+---
+
+Use `shell` actions when the workflow already exists outside Obsidian.
+
+## Open The Current File In VS Code
+
+Use an absolute path to the `code` executable if your shell environment is not
+fully available inside the plugin.
+
+```bash lineNumbers=1
+/path/to/code "{{{path}}}"
+```
+
+## Reveal The Current File In Finder
+
+Reveal the active file in Finder on macOS.
+
+```bash lineNumbers=1
+open -R "{{{path}}}"
+```
+
+## Create A Git Commit For Vault Changes
+
+Create a simple timestamped commit for a vault tracked in Git.
+
+```bash lineNumbers=1
+cd "/path/to/your/vault" && git add . && git commit -m "Vault update: {{date}} {{time}}"
+```
+
+## Run A Formatter Script On The Active File
+
+Pass the current file path to an external formatting script.
+
+```bash lineNumbers=1
+/absolute/path/to/format-note.sh "{{{path}}}"
+```
+
+## Compile LaTeX Through A Script
+
+Compile the active LaTeX file with an external script.
+
+```bash lineNumbers=1
+/absolute/path/to/compile-latex.sh "{{{path}}}"
+```

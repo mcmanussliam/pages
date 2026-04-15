@@ -1,0 +1,45 @@
+---
+title: Runtime Variables
+description: Template variables available when an action is rendered and executed.
+---
+
+Before an action runs, the plugin renders its code with
+[Mustache](https://mustache.github.io/). These variables come from the current
+vault, active file, editor state, and execution time.
+
+## Example
+
+```bash
+echo "Processing {{{file_name_with_ext}}} at {{time}}"
+```
+
+## Variable Reference
+
+| Variable | Description |
+|---|---|
+| `path` | Absolute path to the active file when available |
+| `relative_path` | Path relative to the vault root |
+| `extension` | Active file extension |
+| `readonly` | Whether the editor is read-only |
+| `selected` | Selected editor text |
+| `selected_lower` | Lowercased selected text |
+| `selected_upper` | Uppercased selected text |
+| `length_selected` | Character count of the selection |
+| `word_count` | Word count of the selection, or the full editor content if nothing is selected |
+| `line_index` | Current zero-based line index |
+| `column_index` | Current column index |
+| `vault_name` | Vault name |
+| `file_name` | File name without extension |
+| `file_name_with_ext` | File name with extension |
+| `content` | Full editor content |
+| `content_length` | Character count of the editor content |
+| `timestamp` | ISO timestamp for the current run |
+| `date` | Localized date string for the current run |
+| `time` | Localized time string for the current run |
+| `hello_world` | Test value used by the settings UI during manual execution |
+
+## Notes
+
+- Variables may be empty when there is no active file or editor.
+- The same variables work in both `js` and `shell` actions.
+- Use triple braces such as `{{{path}}}` when you want the raw rendered value.
