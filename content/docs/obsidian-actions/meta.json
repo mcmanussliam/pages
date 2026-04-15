@@ -1,0 +1,15 @@
+{
+  "title": "Obsidian Actions",
+  "root": true,
+  "pages": [
+    "---Introduction---",
+    "index",
+    "getting-started",
+    "---Guides---",
+    "command-types",
+    "env-variables",
+    "hooks",
+    "---Configuration---",
+    "examples"
+  ]
+}

@@ -1,0 +1,43 @@
+---
+title: Runtime Variables
+description: Reference for the template variables available when an action runs.
+---
+
+Before an action executes, the plugin renders its code with [Mustache](https://mustache.github.io/). These runtime variables come from the current vault, file, editor, and execution time.
+
+## Example
+
+```bash
+echo "Processing {{file_name}} at {{time}}"
+```
+
+## Variable Reference
+
+| Variable | Description |
+|---|---|
+| `path` | Absolute path to the active file when available. |
+| `relative_path` | File path relative to the vault root. |
+| `extension` | Active file extension. |
+| `readonly` | Whether the editor is read-only. |
+| `selected` | Selected editor text. |
+| `selected_lower` | Lowercased selected text. |
+| `selected_upper` | Uppercased selected text. |
+| `length_selected` | Length of the selected text. |
+| `word_count` | Word count of the selection, or the full editor content if nothing is selected. |
+| `line_index` | Cursor line index, zero-based. |
+| `column_index` | Cursor column index. |
+| `vault_name` | Vault name. |
+| `file_name` | File name without extension. |
+| `file_name_with_ext` | File name with extension. |
+| `content` | Full editor content. |
+| `content_length` | Character count of the editor content. |
+| `timestamp` | ISO timestamp for the current execution. |
+| `date` | Localized date string for the current execution. |
+| `time` | Localized time string for the current execution. |
+| `hello_world` | Test value used by the settings screen when manually executing an action from the UI. |
+
+## Notes
+
+- Variables depend on current app state. If there is no active file or editor, some values may be empty or unavailable.
+- The plugin renders templates before deciding whether the action is `js` or `shell`, so the same variables work in both action types.
+- Use triple braces such as `{{{path}}}` if you need the raw rendered value without HTML escaping.

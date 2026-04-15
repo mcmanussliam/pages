@@ -1,0 +1,202 @@
+---
+title: Configuration
+description: Global YAML config schema, channel definitions, environment interpolation, and validation rules.
+---
+
+Be Right Back uses one global YAML configuration file. It is loaded before any wrapped command or channel management command runs.
+
+Print the resolved path:
+
+```bash
+brb config path
+```
+
+Validate the file after editing:
+
+```bash
+brb channels validate
+```
+
+## Minimal Config
+
+```yaml title="~/.config/brb/config.yml" lineNumbers=1
+version: 1
+default_channels:
+  - desktop
+channels:
+  desktop:
+    type: desktop
+```
+
+## Validation Rules
+
+- `version` must be `1`
+- `channels` must contain at least one channel
+- `default_channels` must contain at least one channel ID
+- every ID in `default_channels` must exist under `channels`
+- unknown YAML fields are rejected
+
+## Top-Level Fields
+
+| Field | Type | Required | Notes |
+|---|---|---|---|
+| `version` | integer | Yes | Must be `1`. |
+| `default_channels` | string[] | Yes | Used when `--channel` is omitted. |
+| `channels` | map | Yes | Channel definitions keyed by your own channel IDs. |
+
+## Channel Types
+
+| Type | Purpose | Required | Optional |
+|---|---|---|---|
+| `desktop` | Local desktop notification | `type` | none |
+| `webhook` | HTTP JSON delivery | `type`, `url` | `method`, `headers` |
+| `custom` | Execute your own notifier process | `type`, `exec` | `args`, `env` |
+
+## Environment Interpolation
+
+`webhook` and `custom` string values support environment interpolation with `${env:VAR_NAME}`.
+
+Example:
+
+```yaml title="~/.config/brb/config.yml"
+url: https://example.com/hook?token=${env:BRB_TOKEN}
+```
+
+Interpolation rules:
+
+- Missing environment variables cause config loading to fail.
+- Invalid expressions such as `${env:}` cause config loading to fail.
+- Interpolation applies to `webhook.url`, `webhook.method`, webhook header values, `custom.exec`, custom arguments, and custom environment values.
+- Interpolation does not change channel IDs or `default_channels`.
+
+## Webhook Channels
+
+For `type: webhook`:
+
+- `method` defaults to `POST` when omitted.
+- `headers` are optional.
+- Be Right Back sends the completion event as a JSON request body.
+- Non-2xx responses are treated as delivery failures.
+- Invalid HTTP methods or invalid header names and values fail fast.
+
+Example:
+
+```yaml title="~/.config/brb/config.yml" lineNumbers=2
+channels:
+  ci-webhook:
+    type: webhook
+    url: ${env:BRB_WEBHOOK_URL}
+    method: POST
+    headers:
+      Authorization: Bearer ${env:BRB_WEBHOOK_TOKEN}
+      Content-Type: application/json
+```
+
+Example with `ntfy`:
+
+```yaml title="~/.config/brb/config.yml" lineNumbers=2
+channels:
+  ntfy:
+    type: webhook
+    url: https://ntfy.sh/your-topic
+    method: POST
+    headers:
+      Title: brb: completed
+      Tags: crab
+      Priority: default
+```
+
+## Custom Channels
+
+For `type: custom`:
+
+- `exec` can be an executable name, a relative path, or an absolute path.
+- `args` are passed as command-line arguments.
+- `env` adds or overrides environment variables for the child process.
+- Be Right Back writes exactly one JSON completion event to the notifier's stdin.
+- Child stdout is discarded.
+- Child stderr is captured for error reporting.
+- Relative paths are resolved from the working directory where `brb` is launched.
+
+Example:
+
+```yaml title="~/.config/brb/config.yml" lineNumbers=2
+channels:
+  write:
+    type: custom
+    exec: ./scripts/notify.sh
+    args: []
+    env:
+      BRB_CUSTOM_LOG_FILE: /tmp/brb-custom-channel.log
+```
+
+<Callout title="Path Resolution">
+  Relative paths for `custom.exec` are resolved from the working directory where you run `brb`, not from the config file directory.
+</Callout>
+
+## Full Example
+
+This can be found in the repo under `assets/examples/config.yml`
+
+```yaml title="~/.config/brb/config.yml" lineNumbers=1
+version: 1
+
+# channel ids used when you run `brb <command>` without `--channel`.
+# every ID here must exist under `channels`.
+default_channels:
+  - desktop
+
+# all channels keyed by your own channel id
+channels:
+  # minimal local notification channel.
+  # works without any extra fields.
+  desktop:
+    type: desktop
+
+  # generic webhook example
+  ci-webhook:
+    type: webhook # channel type: desktop | webhook | custom
+
+    # target URL for webhook delivery.
+    # `${env:VAR}` reads from environment variables at runtime.
+    url: ${env:BRB_WEBHOOK_URL}
+
+    method: POST # optional HTTP method (defaults to POST if omitted).
+
+    # optional request headers.
+    headers:
+      Authorization: Bearer ${env:BRB_WEBHOOK_TOKEN}
+      Content-Type: application/json
+
+  # custom executable channel example.
+  write:
+    type: custom
+
+    # executable to be ran on notify
+    # relative path (e.g. `./scripts/notifier.sh`): relative to where `brb` is run
+    # absolute path: used directly
+    exec: ./abs/path/to/examples/write-to-logs.sh
+
+    args: [] # optional cli args passed to `exec`.
+
+    # optional environment overrides for the child process.
+    env:
+      BRB_CUSTOM_LOG_FILE: /tmp/brb-custom-channel.log
+
+  # real world examples
+  ntfy:
+    type: webhook
+    url: https://ntfy.sh/yourlinkgohere # remember ntfy webhooks are not password protected, make sure the url is hard enough to guess
+    method: POST
+    headers:
+      Title: 'brb: completed'
+      Tags: crab
+      Priority: default
+```
+
+## Choosing A Channel
+
+- Use `desktop` for local awareness.
+- Use `webhook` when another system already speaks HTTP.
+- Use `custom` when you need full control over formatting, retries, or transport.
+- Keep secrets in environment variables instead of hardcoding them into the YAML file.

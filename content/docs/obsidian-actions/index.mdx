@@ -1,0 +1,41 @@
+---
+title: Overview
+description: Create and run custom JavaScript or shell automations inside Obsidian.
+---
+
+Obsidian Actions lets you define small automations without building a full Obsidian plugin. Each action has a trigger, an execution type, and a code body.
+
+## What It Does
+
+- runs actions manually from the command palette
+- runs actions when Obsidian starts
+- runs actions on a cron-style schedule
+- runs actions when vault file events occur
+- renders runtime variables into your code before execution
+
+## How It Works
+
+1. Create an action in `Settings -> Actions`.
+2. Choose a trigger such as `manual`, `startup`, or `interval`.
+3. Choose an execution type: `js` or `shell`.
+4. Write your code using Mustache templates such as `{{file_name}}` or `{{path}}`.
+5. Restart Obsidian so new commands and hooks are registered.
+
+## Execution Types
+
+<Tabs items={["JavaScript", "Shell"]}>
+  <Tab>
+    `js` actions run inside the plugin and have access to selected Obsidian APIs and helpers such as `app`, `workspace`, `Notice`, and `exec`.
+  </Tab>
+  <Tab>
+    `shell` actions run as plain shell commands through the host system. This is useful for scripts, CLI tools, and external workflows.
+  </Tab>
+</Tabs>
+
+<Callout type="info" title="Important">
+  Saving an action stores it immediately, but command and hook registration happens when the plugin loads. Restart Obsidian after creating or changing actions if you expect new manual commands or hook behavior to take effect.
+</Callout>
+
+<Callout type="warning" title="Trust Model">
+  Both `js` and `shell` actions execute code you provide. Treat actions as trusted automation and review them carefully before enabling startup, scheduled, or file-event triggers.
+</Callout>

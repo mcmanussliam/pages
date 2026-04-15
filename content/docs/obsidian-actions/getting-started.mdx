@@ -1,0 +1,72 @@
+---
+title: Getting Started
+description: Install the plugin, create your first action, and understand the setup flow.
+---
+
+## Install
+
+### Community Plugin
+
+1. Open Obsidian.
+2. Go to `Settings -> Community Plugins -> Browse`.
+3. Search for `Obsidian Actions`.
+4. Install and enable the plugin.
+
+### Manual Install
+
+Copy the plugin files into `<vault>/.obsidian/plugins/actions`.
+
+<Files>
+  <Folder name=".obsidian" defaultOpen>
+    <Folder name="plugins" defaultOpen>
+      <Folder name="actions" defaultOpen>
+        <File name="main.js" />
+        <File name="styles.css" />
+        <File name="manifest.json" />
+      </Folder>
+    </Folder>
+  </Folder>
+</Files>
+
+Then enable `Obsidian Actions` in Community Plugins settings.
+
+## Local Development
+
+```bash
+git clone https://github.com/mcmanussliam/obsidian-actions.git
+cd obsidian-actions
+npm ci
+npm run dev
+```
+
+During development, symlink the repository into your vault plugin directory so Obsidian loads the local build.
+
+## Create an Action
+
+1. Open `Settings -> Actions`.
+2. Click `Create`.
+3. Fill in the action fields.
+
+| Field | Required | Purpose |
+|---|---|---|
+| `name` | Yes | Display name for the action. The plugin derives the internal ID from this name. |
+| `icon` | No | Lucide icon name used in the settings UI. |
+| `description` | No | Short explanation of what the action does. |
+| `hook` | Yes | When the action runs. |
+| `type` | Yes | `js` or `shell`. |
+| `code` | Yes | The action body to execute. |
+| `schedule` | Only for `interval` | Cron expression used by scheduled actions. |
+| `enabled` | Yes | Controls whether the action should run. |
+
+4. Save the action.
+5. Restart Obsidian so the action is registered.
+
+## Running Manual Actions
+
+Actions with the `manual` hook are exposed as Obsidian commands. After restart, open the command palette and run the action by name.
+
+You can also use the play button in the settings screen to test an action directly.
+
+<Callout type="warning" title="Restart Required">
+  The plugin persists changes immediately, but it does not re-register commands and hooks live. If you add, rename, enable, disable, or retarget an action, restart Obsidian before relying on the new behavior.
+</Callout>

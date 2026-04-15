@@ -1,0 +1,65 @@
+---
+title: Event Payload
+description: JSON payload shape and delivery semantics for webhook and custom channels.
+---
+
+Be Right Back sends a completion event to `webhook` and `custom` channels.
+
+## Example Payload
+
+```json
+{
+  "tool": "brb",
+  "status": "success",
+  "command": ["pnpm", "test"],
+  "cwd": "/path/to/project",
+  "started_at": "2026-02-22T12:00:00.000Z",
+  "finished_at": "2026-02-22T12:00:03.250Z",
+  "duration_ms": 3250,
+  "exit_code": 0,
+  "host": "my-machine"
+}
+```
+
+## Fields
+
+| Field | Type | Meaning |
+|---|---|---|
+| `tool` | string | Constant value: `brb`. |
+| `status` | string | `success` when the wrapped command exits with `0`, otherwise `failure`. |
+| `command` | string[] | Exact argument vector passed to the wrapped command. |
+| `cwd` | string | Working directory where Be Right Back was invoked. |
+| `started_at` | string | UTC RFC3339 timestamp with millisecond precision. |
+| `finished_at` | string | UTC RFC3339 timestamp with millisecond precision. |
+| `duration_ms` | integer | Total runtime in milliseconds. |
+| `exit_code` | integer | Wrapped command exit code. If the command could not be started, this is `127`. |
+| `host` | string | Hostname, or `unknown-host` if it cannot be determined. |
+
+## Delivery Semantics
+
+- Each selected channel is attempted independently.
+- Failure on one channel does not prevent delivery to the others.
+- The final process exit code still matches the wrapped command.
+- `webhook` delivery sends this object as a JSON request body.
+- `custom` delivery writes exactly one JSON document to the notifier process `stdin`.
+
+This is the payload shape used for both real command completions and test events.
+
+## Test Payloads
+
+`brb channels test <channel-id>` sends a synthetic success event with the same schema. Use it when you are building or debugging a webhook receiver or custom notifier.
+
+## Custom Channel I/O
+
+For `type: custom` channels:
+
+- `stdin` receives the JSON payload
+- `stdout` is discarded
+- `stderr` is captured for error reporting
+- a non-zero notifier exit status marks delivery as failed
+
+## Redaction And Error Reporting
+
+When Be Right Back reports delivery failures, it attempts to redact token-like values from error messages, including common bearer tokens, query-string secrets, and URL credentials.
+
+This redaction is best-effort only. Treat it as a safety improvement, not a complete secret-handling boundary.
