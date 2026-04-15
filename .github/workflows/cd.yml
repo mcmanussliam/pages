@@ -43,7 +43,7 @@ jobs:
           NODE_ENV: production
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: ./out
+          path: .source
 
   deploy:
     needs: build
