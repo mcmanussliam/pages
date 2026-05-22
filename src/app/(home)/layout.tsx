@@ -13,6 +13,7 @@ export default function Layout({ children }: LayoutProps<"/">) {
           items: [
             { text: "Be Right Back", url: "/docs" },
             { text: "Obsidian Actions", url: "/docs/obsidian-actions" },
+            { text: "Claude Remote Config", url: "/docs/claude-remote-config" },
           ],
         },
         {
@@ -26,6 +27,12 @@ export default function Layout({ children }: LayoutProps<"/">) {
           text: "Obsidian Actions",
           on: "nav",
           url: "/docs/obsidian-actions",
+        },
+        {
+          type: "main",
+          text: "Claude Remote Config",
+          on: "nav",
+          url: "/docs/claude-remote-config",
         },
       ]}
     >
