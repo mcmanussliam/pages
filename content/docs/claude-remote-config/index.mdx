@@ -1,0 +1,49 @@
+---
+title: Overview
+icon: CloudCog
+description: Shared, versioned Claude Code configuration for every project.
+---
+
+Claude Remote Config is a Claude Code plugin plus a small CLI for sharing
+Claude Code configuration across projects. It syncs a shared `.claude/` tree
+from a git repository into generated, gitignored paths in each consuming
+project.
+
+## Features
+
+- One shared config repository, maintained once and pulled into every project
+  that needs it.
+- Tag and path filtering, so each project can include only the rules, commands,
+  and skills it needs.
+- Fully generated output, so shared Claude files stay separate from project
+  files and do not overwrite local configuration.
+
+## Quick Start
+
+1. Install the plugin:
+
+```bash
+claude plugin marketplace add mcmanussliam/claude-remote-config
+claude plugin install remote-config@mcmanussliam
+```
+
+2. In each project, run the setup command from Claude Code:
+
+```bash
+/remote-config setup --remote git@example.com:your-org/claude-config.git
+```
+
+3. Commit the files created by setup:
+
+```text
+.claude-remote-config.json
+.gitignore
+```
+
+4. Restart Claude Code. The plugin syncs and regenerates the selected
+   configuration automatically on each session start.
+
+## Docs
+
+- [Getting Started](/docs/claude-remote-config/getting-started)
+- [Remote Format](/docs/claude-remote-config/remote-format)

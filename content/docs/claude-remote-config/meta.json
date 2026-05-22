@@ -1,0 +1,5 @@
+{
+  "title": "Claude Remote Config",
+  "root": true,
+  "pages": ["index", "getting-started", "remote-format"]
+}
