@@ -31,5 +31,6 @@
     "tailwindcss": "4.2.2",
     "typescript": "6.0.2",
     "@biomejs/biome": "2.4.11"
-  }
+  },
+  "packageManager": "pnpm@10.14.0"
 }
