@@ -1,0 +1,58 @@
+---
+title: Quick Start
+icon: Rocket
+description: Install the plugin, setup your token, and safely use glab.
+---
+
+## Install The Plugin [step]
+
+Within a Claude sessions, started with `claude`:
+
+```shell
+/plugin marketplace add mcmanussliam/safe-glab-mcp
+/claude plugin install safe-glab-mcp@mcmanussliam-safe-glab-mcp
+```
+
+## Store your token in the OS keychain [step]
+
+Add your git token with api scope to the OS keychain:
+
+```shell
+security add-generic-password -s safe-glab -a SAFE_GLAB_TOKEN -w "glpat-xxxxxxxxxxxxxxxxxxxx"
+```
+
+## Edit your config [step]
+
+The config is created automatically at `$CLAUDE_PLUGIN_DATA/safe-glab.json` on first start.
+
+```json
+{
+  "$schema": "https://raw.githubusercontent.com/mcmanussliam/safe-glab-mcp/main/safe-glab.schema.json",
+  "gitlab": {
+    "baseUrl": "https://gitlab.example.com",
+    // Name of the keychain entry (or env var fallback) that holds your token
+    "tokenKey": "SAFE_GLAB_TOKEN"
+  },
+  "defaults": {
+    // Claude cannot create branches matching these patterns
+    "protectedBranches": ["main", "master", "production", "release/*"],
+    // Claude can only open MRs targeting these branches
+    "allowedMergeRequestTargetBranches": ["main", "master", "develop", "release/*"],
+    // Files larger than this (bytes) are refused — 256 KB default
+    "maxRepositoryFileBytes": 262144
+  },
+  "projects": [
+    {
+      "path": "my-group/my-project",
+      "permissions": {
+        "branches": { "list": true,  "get": true,  "create": true },
+        "mergeRequests": { "list": true,  "get": true,  "create": true,  "comment": true },
+        "issues": { "list": true,  "get": true,  "create": true,  "update": true, "delete": false, "comment": true },
+        "metadata": { "labels": true, "milestones": true, "users": true },
+        "pipelines": { "list": true,  "get": true,  "jobs": true },
+        "repository": { "readFiles": true, "readTree": true }
+      }
+    }
+  ]
+}
+```

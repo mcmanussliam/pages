@@ -30,9 +30,9 @@ export default function Layout({ children }: LayoutProps<"/">) {
         },
         {
           type: "main",
-          text: "Claude Remote Config",
+          text: "Safe glab MCP",
           on: "nav",
-          url: "/docs/claude-remote-config",
+          url: "/docs/safe-glab-mcp",
         },
       ]}
     >
