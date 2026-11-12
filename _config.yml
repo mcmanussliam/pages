@@ -1,0 +1,15 @@
+title: Liam McManus
+theme_color: "#101110"
+permalink: /short-posts/:title/
+
+defaults:
+  - scope:
+      path: ""
+      type: posts
+    values:
+      layout: post
+
+exclude:
+  - Gemfile
+  - Gemfile.lock
+  - README.md

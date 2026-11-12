@@ -1,0 +1,11 @@
+<section aria-labelledby="{{ include.id }}">
+  <h2 id="{{ include.id }}">{{ include.title }}</h2>
+  <ul class="entries" role="list">
+    {% for entry in include.items %}
+    <li>
+      <a href="{{ entry.url | escape }}">{{ entry.title | escape }}</a>
+      {% if entry.description %}<span class="entry-description">{{ entry.description | escape }}</span>{% endif %}
+    </li>
+    {% endfor %}
+  </ul>
+</section>

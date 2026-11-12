@@ -1,0 +1,31 @@
+work: Software Engineer at VeryConnect
+education: Software Engineering BSc (Hons) at the University of Glasgow
+intro: I make small tools, some of them live here.
+
+projects:
+  - title: Obsidian Actions
+    url: https://github.com/mcmanussliam/obsidian-actions
+    description: Automate your Obsidian vault with JavaScript and shell commands.
+  - title: Obsidian Dice Roller
+    url: https://github.com/mcmanussliam/obsidian-diceroller
+    description: Roll 3D dice with physics simulation inside Obsidian.
+  - title: Safe glab MCP
+    url: https://github.com/mcmanussliam/safe-glab-mcp
+    description: A Claude plugin for scoped access to GitLab CE.
+  - title: Claude Plugin Rules
+    url: https://github.com/mcmanussliam/claude-plugin-rules
+    description: Load project-specific rules from Claude Code plugins.
+
+hackathons:
+  - title: DYHTG 2026
+    url: https://github.com/mcmanussliam/dyhtg-2026
+    description: A two-button game for the JPMorganChase challenge.
+  - title: DYHTG 2025
+    url: https://github.com/mcmanussliam/dyhtg-2025
+    description: Runner-up in freetobook’s challenge with a geography 404 game.
+
+profiles:
+  - title: GitHub
+    url: https://github.com/mcmanussliam
+  - title: LinkedIn
+    url: https://uk.linkedin.com/in/liam-mcmanus-617031241

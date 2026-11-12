@@ -1,0 +1,41 @@
+---
+layout: default
+home: true
+---
+{% assign portfolio = site.data.portfolio %}
+<h1>{{ site.title | escape }}</h1>
+<p class="intro">
+  {{ portfolio.work | escape }}<br>
+  {{ portfolio.education | escape }}
+</p>
+<p class="intro">{{ portfolio.intro | escape }}</p>
+
+{% include entries.html id="projects" title="Projects" items=portfolio.projects %}
+{% include entries.html id="hackathons" title="Hackathons" items=portfolio.hackathons %}
+
+<section aria-labelledby="short-posts">
+  <h2 id="short-posts">Short posts</h2>
+  {% if site.posts.size == 0 %}
+  <p class="intro">Oops, there’s nothing here yet.</p>
+  {% else %}
+  <ul class="entries" role="list">
+    {% for post in site.posts %}
+    <li>
+      <a href="{{ post.url | relative_url }}">{{ post.title | escape }}</a>
+      {% if post.draft %}<span class="entry-description">Draft</span>{% endif %}
+    </li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+</section>
+
+<footer>
+  {% for profile in portfolio.profiles %}
+  <a class="profile" href="{{ profile.url | escape }}">
+    <span class="profile-label">{{ profile.title | escape }}</span>
+    <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+      <path d="M9 3h4v4m0-4L7 9m4 0v4H3V5h4"/>
+    </svg>
+  </a>
+  {% endfor %}
+</footer>
